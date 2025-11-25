@@ -18,8 +18,8 @@
     <div id="signBox"
          style="
          position: fixed;
-         top: 160px;
-         right: 10px;
+         bottom: 20px;     /* ← نقلناه للأسفل */
+         left: 20px;       /* ← نقلناه لليسار */
          width: 140px;
          height: 200px;
          background: rgba(0,0,0,0.55);
@@ -51,7 +51,8 @@
 
         <!-- زر تفعيل قارئ الشاشة -->
         <button 
-            onclick="enableTapReading()"
+            onclick="enableTapReading()
+"
             class="w-full bg-blue-600 text-white py-3 mt-4 rounded-xl shadow font-bold hover:bg-blue-700 transition">
             🔊 تفعيل القارئ الصوتي (Screen Reader)
         </button>

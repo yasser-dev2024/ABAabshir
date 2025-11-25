@@ -53,14 +53,14 @@
     <script src="script.js"></script>
     <script src="smart-access.js"></script>
 
-    <!-- ========== إضافة ميزة اللمس الناطق + مترجم لغة الإشارة ========== -->
+    <!-- ========== ميزة اللمس الناطق + مترجم لغة الإشارة ========== -->
     <script>
 
-        /* نافذة مترجم الإشارة */
+        /* نافذة مترجم الإشارة — تم نقلها أسفل يسار الشاشة حسب طلبك */
         const signBox = document.createElement("div");
         signBox.style.position = "fixed";
-        signBox.style.top = "160px";
-        signBox.style.right = "10px";
+        signBox.style.bottom = "20px";        /* كان top، الآن bottom */
+        signBox.style.left = "20px";          /* كان right، الآن left */
         signBox.style.width = "140px";
         signBox.style.height = "200px";
         signBox.style.background = "rgba(0,0,0,0.55)";
@@ -105,13 +105,13 @@
             let text = e.target.innerText.trim();
             if (text.length === 0) return;
 
-            // النطق
+            // 🎤 النطق
             const speak = new SpeechSynthesisUtterance(text);
             speak.lang = "ar-SA";
             speak.rate = 1.0;
             window.speechSynthesis.speak(speak);
 
-            // لغة الإشارة
+            // 🤟 لغة الإشارة
             let words = text.split(" ");
             let found = null;
             for (let w of words) {
