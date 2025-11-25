@@ -53,32 +53,66 @@
     <script src="script.js"></script>
     <script src="smart-access.js"></script>
 
-    <!-- ========== ميزة اللمس الناطق + مترجم لغة الإشارة ========== -->
+    <!-- ========== ميزة اللمس الناطق + مترجم لغة الإشارة (الفيديو فقط) ========== -->
     <script>
 
-        /* نافذة مترجم الإشارة — تم نقلها أسفل يسار الشاشة حسب طلبك */
+        /* نافذة مترجم الإشارة — أسفل يسار الشاشة */
         const signBox = document.createElement("div");
         signBox.style.position = "fixed";
-        signBox.style.bottom = "20px";        /* كان top، الآن bottom */
-        signBox.style.left = "20px";          /* كان right، الآن left */
-        signBox.style.width = "140px";
-        signBox.style.height = "200px";
-        signBox.style.background = "rgba(0,0,0,0.55)";
-        signBox.style.borderRadius = "15px";
-        signBox.style.backdropFilter = "blur(6px)";
-        signBox.style.padding = "10px";
+        signBox.style.bottom = "20px";
+        signBox.style.left = "20px";
+
+        /* 🔥 إزالة المربع والخلفية بالكامل */
+        signBox.style.background = "transparent";
+        signBox.style.borderRadius = "0";
+        signBox.style.backdropFilter = "none";
+        signBox.style.padding = "0";
+
         signBox.style.display = "flex";
+        signBox.style.flexDirection = "column";
         signBox.style.alignItems = "center";
         signBox.style.justifyContent = "center";
-        signBox.style.color = "#fff";
-        signBox.style.fontWeight = "bold";
-        signBox.style.textAlign = "center";
-        signBox.style.fontSize = "14px";
         signBox.style.zIndex = "999999";
-        signBox.innerText = "مرر الماوس على أي نص\nلعرض لغة الإشارة 👋";
+
+        /* ====== الفيديو فقط ====== */
+        const videos = [
+            "assets/videos/11.mp4",
+            "assets/videos/22.mp4"
+        ];
+
+        let currentIndex = 0;
+
+        const video = document.createElement("video");
+        video.src = videos[0];
+        video.style.width = "160px";      /* مناسب للجوال */
+        video.style.height = "auto";
+        video.style.borderRadius = "12px"; /* الفيديو أنيق بدون خلفية */
+        video.autoplay = true;
+        video.muted = true;
+        video.playsInline = true;
+
+        /* عند انتهاء الفيديو → تشغيل الفيديو التالي تلقائياً */
+        video.onended = () => {
+            currentIndex = (currentIndex + 1) % videos.length;
+            video.src = videos[currentIndex];
+            video.play();
+        };
+
+        /* نص صغير تحت الفيديو */
+        const signText = document.createElement("div");
+        signText.innerText = "مرر الماوس على أي نص لعرض لغة الإشارة 👋";
+        signText.style.color = "#fff";
+        signText.style.fontSize = "12px";
+        signText.style.marginTop = "6px";
+        signText.style.textAlign = "center";
+
+        /* إضافتهم */
+        signBox.appendChild(video);
+        signBox.appendChild(signText);
+
         document.body.appendChild(signBox);
 
-        /* قاموس الإشارة العربية */
+        /* قاموس الإشارة */
         const signDictionary = {
             "السفارة": "🤟 السفارة",
             "الدولة": "👌 الدولة",
@@ -120,7 +154,8 @@
                     break;
                 }
             }
-            signBox.innerText = found ? found : "🤟 إشارة النص";
+
+            signText.innerText = found ? found : "🤟 إشارة النص";
         });
 
     </script>
