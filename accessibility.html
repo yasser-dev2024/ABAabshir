@@ -41,6 +41,31 @@
         .fixed-btn:hover {
             transform: translateY(-2px);
         }
+
+        /* ===== مربّع فيديو مترجم الإشارة ===== */
+        #signVideoBox {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 180px;
+            height: 260px;
+            background: rgba(0,0,0,0.45);
+            border-radius: 15px;
+            backdrop-filter: blur(6px);
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999999;
+            overflow: hidden;
+        }
+
+        #signVideoBox video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 12px;
+        }
     </style>
 </head>
 
@@ -49,30 +74,14 @@
     <!-- ===== الخلفية الثابتة ===== -->
     <img src="assets/images/abshir-bg.jpg" class="bg-img" alt="bg">
 
-    <!-- ===== نافذة مترجم لغة الإشارة ===== -->
-    <div id="signBox"
-         style="
-         position: fixed;
-         bottom: 20px;
-         left: 20px;
-         width: 140px;
-         height: 200px;
-         background: rgba(0,0,0,0.55);
-         border-radius: 15px;
-         backdrop-filter: blur(6px);
-         padding: 10px;
-         display: flex;
-         align-items: center;
-         justify-content: center;
-         color: #fff;
-         font-weight: bold;
-         text-align: center;
-         font-size: 14px;
-         z-index: 999999;">
-         مرر الماوس على النص<br>لعرض لغة الإشارة
+    <!-- ============================================================
+         نافذة فيديو مترجم لغة الإشارة (ثابتة بكل الصفحات)
+    ============================================================ -->
+    <div id="signVideoBox">
+        <video id="signVideo" autoplay muted playsinline></video>
     </div>
 
-    <!-- ===== المحتوى الأساسي الثابت ===== -->
+    <!-- ===== المحتوى الأساسي ===== -->
     <div class="page-wrapper">
 
         <h2 class="text-center text-2xl font-bold text-green-700">
@@ -82,8 +91,6 @@
         <p class="text-gray-700 text-sm leading-relaxed text-center">
             هذه الخدمة تساعد المكفوفين، الصم، وذوي الإعاقة الحركية في استخدام المنصة بسهولة.
         </p>
-
-        <!-- حذف زر القارئ الصوتي حسب طلبك -->
 
         <!-- زر تفعيل التكبير -->
         <button onclick="enableZoomMode()"
@@ -97,8 +104,6 @@
             🤟 مترجم لغة الإشارة
         </button>
 
-        <!-- حذف زر قراءة النص حسب طلبك -->
-
         <!-- زر العودة -->
         <a href="index.html"
            class="fixed-btn bg-gray-300 text-gray-800 text-center hover:bg-gray-400">
@@ -111,10 +116,33 @@
     <script src="smart-access.js"></script>
 
     <!-- ======================================================
-         اللمس الناطق + إيقاف الصوت + دعم قراءة القوائم
+         نظام قراءة النصوص + اختيار القوائم + لغة الإشارة
     ======================================================= -->
     <script>
-        const signBox = document.getElementById("signBox");
+        const signVideo = document.getElementById("signVideo");
+
+        /* ===== مسارات فيديوهات لغة الإشارة ===== */
+        const videos = [
+            "assets/videos/11.mp4",
+            "assets/videos/22.mp4"
+        ];
+
+        let currentVideo = 0;
+
+        /* ===== تشغيل الفيديوهات بالتبديل ===== */
+        function playNextVideo() {
+            signVideo.src = videos[currentVideo];
+            signVideo.play();
+
+            currentVideo = (currentVideo + 1) % videos.length;
+        }
+
+        signVideo.addEventListener("ended", playNextVideo);
+        playNextVideo();
+
+
+        /* ===== قاموس الإشارات النصية (النظام القديم يبقى شغّال) ===== */
+        const signBox = document.getElementById("signVideoBox");
 
         const signDictionary = {
             "السفارة": "🤟 إشارة السفارة",
@@ -141,9 +169,7 @@
             "احتياجات": "✋"
         };
 
-        /* ============================================================
-           1) اللمس الناطق — مع إيقاف الصوت السابق فورًا
-        ============================================================ */
+        /* ===== 1) اللمس الناطق — مع إيقاف الصوت السابق فورًا ===== */
         document.addEventListener("mouseover", function (e) {
 
             let text = e.target.innerText.trim();
@@ -163,13 +189,9 @@
                     break;
                 }
             }
-
-            signBox.innerText = found ? found : "🤟 إشارة النص";
         });
 
-        /* ============================================================
-           2) قراءة اختيار القوائم المنسدلة بصوت: "لقد اخترت ..."
-        ============================================================ */
+        /* ===== 2) قراءة اختيار القوائم المنسدلة ===== */
         document.addEventListener("change", function (e) {
             if (e.target.tagName === "SELECT") {
 
