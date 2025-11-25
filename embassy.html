@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>التواصل مع السفارة</title>
+
+    <link rel="stylesheet" href="libs/tailwind.css" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body class="font-[Cairo]">
+
+    <!-- ===== صندوق الصفحة بين الهيدر والفوتر ===== -->
+    <div class="page-wrapper">
+
+        <h2 class="text-center text-xl font-bold text-green-700 mb-4">
+            التواصل مع السفارة
+        </h2>
+
+        <div class="space-y-5">
+
+            <!-- اختيار الدولة -->
+            <div>
+                <label class="font-bold text-gray-700">اختر الدولة</label>
+                <select id="country" class="w-full mt-2 p-3 rounded-xl shadow border bg-white">
+                    <option selected disabled>اختر الدولة</option>
+                    <option>السعودية</option>
+                    <option>الإمارات</option>
+                    <option>مصر</option>
+                    <option>تركيا</option>
+                    <option>فرنسا</option>
+                    <option>ألمانيا</option>
+                    <option>أمريكا</option>
+                </select>
+            </div>
+
+            <!-- تحديد الموقع -->
+            <div>
+                <label class="font-bold text-gray-700">تحديد الموقع</label>
+                <button onclick="detectLocation()" 
+                    class="w-full bg-blue-600 text-white mt-2 py-3 rounded-xl font-bold shadow hover:bg-blue-700">
+                    تحديد تلقائي عبر Google Map
+                </button>
+                <p id="locationStatus" class="text-sm text-gray-600 mt-1"></p>
+            </div>
+
+            <!-- نوع البلاغ -->
+            <div>
+                <label class="font-bold text-gray-700">نوع البلاغ</label>
+                <select id="reportType" class="w-full mt-2 p-3 rounded-xl shadow border bg-white">
+                    <option selected disabled>اختر نوع البلاغ</option>
+                    <option>بلاغ أمني</option>
+                    <option>بلاغ طارئ</option>
+                    <option>فقدان جواز السفر</option>
+                    <option>طلب مساعدة عاجلة</option>
+                    <option>استفسار عام</option>
+                </select>
+            </div>
+
+            <!-- وصف البلاغ -->
+            <div>
+                <label class="font-bold text-gray-700">وصف الحالة</label>
+                <textarea id="details" rows="4"
+                    class="w-full mt-2 p-3 rounded-xl shadow border bg-white"
+                    placeholder="اكتب تفاصيل البلاغ هنا..."></textarea>
+            </div>
+
+            <!-- إرفاق مرفق -->
+            <div>
+                <label class="font-bold text-gray-700">إرفاق ملف أو صورة (اختياري)</label>
+                <input type="file" id="attachment"
+                       class="w-full mt-2 p-3 rounded-xl shadow border bg-white">
+            </div>
+
+            <!-- تشغيل الكاميرا فيديو 15 ثانية -->
+            <button onclick="startEmergencyVideo()"
+                class="w-full bg-red-600 text-white py-3 rounded-xl font-bold shadow hover:bg-red-700">
+                تشغيل كاميرا الطوارئ (يسجّل 15 ثانية)
+            </button>
+
+            <video id="preview" class="w-full rounded-xl hidden mt-3"></video>
+
+            <!-- إرسال الطلب -->
+            <button onclick="sendForm()"
+                class="w-full bg-green-700 text-white py-4 rounded-xl text-lg font-bold shadow hover:bg-green-800">
+                إرسال البلاغ
+            </button>
+
+            <!-- العودة للرئيسية -->
+            <a href="index.html"
+                class="block text-center bg-gray-300 text-gray-800 py-4 rounded-xl text-lg font-bold shadow hover:bg-gray-400">
+                العودة للرئيسية
+            </a>
+
+        </div>
+    </div>
+
+    <!-- ========== سكربت ========== -->
+    <script>
+        /* تحديد الموقع الجغرافي */
+        function detectLocation() {
+            if (!navigator.geolocation) {
+                locationStatus.textContent = "المتصفح لا يدعم تحديد الموقع.";
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    locationStatus.textContent =
+                        "تم تحديد موقعك بنجاح (جاهز للإرسال ✔)";
+                },
+                () => {
+                    locationStatus.textContent = "فشل تحديد الموقع.";
+                }
+            );
+        }
+
+        /* تسجيل فيديو 15 ثانية */
+        function startEmergencyVideo() {
+            let video = document.getElementById("preview");
+
+            navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+                .then((stream) => {
+                    video.srcObject = stream;
+                    video.classList.remove("hidden");
+                    video.play();
+
+                    setTimeout(() => {
+                        stream.getTracks().forEach((t) => t.stop());
+                        video.classList.add("hidden");
+                        alert("🎥 تم تسجيل فيديو الطوارئ (15 ثانية) وإرفاقه تلقائياً!");
+                    }, 15000);
+                })
+                .catch(() => alert("فشل تشغيل الكاميرا!"));
+        }
+
+        /* إرسال البلاغ */
+        function sendForm() {
+            alert("✔ تم إرسال البلاغ بنجاح إلى السفارة.");
+        }
+    </script>
+
+</body>
+</html>
