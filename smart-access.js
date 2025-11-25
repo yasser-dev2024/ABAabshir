@@ -47,7 +47,7 @@ function showSignLanguageVideo() {
     videoBox.style.backdropFilter = "blur(4px)";
 
     let video = document.createElement("video");
-    video.src = "assets/videos/sign.mp4";  // هنا ضع مسار فيديو مترجم الإشارة
+    video.src = "assets/videos/sign.mp4";  
     video.autoplay = true;
     video.loop = true;
     video.style.width = "100%";
@@ -69,3 +69,56 @@ function enableTapReading() {
     if (navigator.vibrate) navigator.vibrate([60]);
 }
 
+
+
+/* ================================================================
+   5 — نظام الـ Double Click للمكفوفين (على كل العناصر)
+   ضغطة أولى: نطق العنصر فقط
+   ضغطة ثانية: تنفيذ الفعل
+================================================================ */
+let lastClickedElement = null;
+let lastClickTime = 0;
+
+document.addEventListener("click", function (e) {
+
+    // منع تفعيل الـ double-click على signBox
+    if (e.target.closest("#signBox")) return;
+
+    let target = e.target;
+    let text = target.innerText.trim();
+
+    let now = Date.now();
+
+    // هل هي نفس العنصر خلال نصف ثانية = دبل كليك؟
+    if (lastClickedElement === target && (now - lastClickTime) < 500) {
+
+        // 🔥 تنفيذ الفعل الحقيقي للعنصر
+        if (target.tagName === "BUTTON" || target.onclick) {
+            target.click = Function.prototype; // منع النطق من التكرار
+            target.dispatchEvent(new Event("dblclick")); 
+            target.dispatchEvent(new Event("click"));
+        }
+
+        if (target.tagName === "A" && target.href) {
+            window.location.href = target.href;
+        }
+
+        if (target.tagName === "SELECT") {
+            // لا شيء — الاختيار يتم من داخل Change Event
+        }
+
+        // إعادة التهيئة
+        lastClickedElement = null;
+        lastClickTime = 0;
+        return;
+    }
+
+    // الضغطة الأولى: نطق فقط
+    window.speechSynthesis.cancel();
+    if (text !== "") speakText(text);
+
+    // حفظ وقت الضغطة
+    lastClickedElement = target;
+    lastClickTime = now;
+
+});

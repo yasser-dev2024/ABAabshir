@@ -7,6 +7,41 @@
 
     <link href="libs/tailwind.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
+
+    <style>
+        /* منع التمرير نهائيًا */
+        html, body {
+            overflow: hidden;
+            height: 100%;
+        }
+
+        /* ضبط الصفحة لتناسب الشاشة بالكامل */
+        .page-wrapper {
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 500px;
+            height: 80%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+        }
+
+        /* أزرار أجمل وأكثر ثباتًا */
+        .fixed-btn {
+            padding: 14px;
+            font-size: 17px;
+            font-weight: bold;
+            border-radius: 14px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+            transition: 0.2s;
+        }
+        .fixed-btn:hover {
+            transform: translateY(-2px);
+        }
+    </style>
 </head>
 
 <body class="font-[Cairo]">
@@ -37,55 +72,46 @@
          مرر الماوس على النص<br>لعرض لغة الإشارة
     </div>
 
-    <!-- ===== الحاوية بين الهيدر والفوتر ===== -->
+    <!-- ===== المحتوى الأساسي الثابت ===== -->
     <div class="page-wrapper">
 
-        <h2 class="text-center text-xl font-bold text-green-700 mb-4">
+        <h2 class="text-center text-2xl font-bold text-green-700">
             خدمات ذوي الاحتياجات الخاصة
         </h2>
 
-        <p class="text-gray-700 text-sm leading-relaxed mb-4">
+        <p class="text-gray-700 text-sm leading-relaxed text-center">
             هذه الخدمة تساعد المكفوفين، الصم، وذوي الإعاقة الحركية في استخدام المنصة بسهولة.
-            قم باختيار نوع المساعدة التي تحتاجها وسيتم إرشادك خطوة بخطوة.
         </p>
 
-        <!-- زر تفعيل قارئ الشاشة -->
-        <button onclick="enableTapReading()"
-            class="w-full bg-blue-600 text-white py-3 mt-4 rounded-xl shadow font-bold hover:bg-blue-700 transition">
-            🔊 تفعيل القارئ الصوتي (Screen Reader)
-        </button>
+        <!-- حذف زر القارئ الصوتي حسب طلبك -->
 
-        <!-- زر تفعيل تكبير الشاشة -->
+        <!-- زر تفعيل التكبير -->
         <button onclick="enableZoomMode()"
-            class="w-full bg-purple-600 text-white py-3 mt-3 rounded-xl shadow font-bold hover:bg-purple-700 transition">
-            🔍 تفعيل وضع التكبير البصري
+            class="fixed-btn bg-purple-600 text-white hover:bg-purple-700">
+            🔍 وضع التكبير البصري
         </button>
 
         <!-- زر تفعيل لغة الإشارة -->
         <button onclick="showSignLanguageVideo()"
-            class="w-full bg-orange-500 text-white py-3 mt-3 rounded-xl shadow font-bold hover:bg-orange-600 transition">
-            🤟 مترجم لغة الإشارة (الأصم)
+            class="fixed-btn bg-orange-500 text-white hover:bg-orange-600">
+            🤟 مترجم لغة الإشارة
         </button>
 
-        <!-- زر قراءة النص -->
-        <button onclick="speakText(document.querySelector('p').innerText)"
-            class="w-full bg-green-700 text-white py-3 mt-3 rounded-xl shadow font-bold hover:bg-green-800 transition">
-            🎧 قراءة النص المعروض الآن
-        </button>
+        <!-- حذف زر قراءة النص حسب طلبك -->
 
         <!-- زر العودة -->
         <a href="index.html"
-           class="block text-center bg-gray-300 text-gray-800 py-3 mt-6 rounded-xl text-lg font-bold shadow hover:bg-gray-400">
+           class="fixed-btn bg-gray-300 text-gray-800 text-center hover:bg-gray-400">
             العودة للصفحة الرئيسية
         </a>
 
     </div>
 
-    <!-- ===== ملفات الذكاء المساعدة ===== -->
+    <!-- ===== ملفات الذكاء ===== -->
     <script src="smart-access.js"></script>
 
     <!-- ======================================================
-         نظام اللمس الناطق + إيقاف الصوت + دعم قراءة القوائم
+         اللمس الناطق + إيقاف الصوت + دعم قراءة القوائم
     ======================================================= -->
     <script>
         const signBox = document.getElementById("signBox");
@@ -112,27 +138,24 @@
             "قراءة": "👂",
             "نص": "📘",
             "ذوي": "🤲",
-            "احتياجات": "✋",
-            "خاصة": "🤟"
+            "احتياجات": "✋"
         };
 
         /* ============================================================
-           1) اللمس الناطق — مع إيقاف الصوت السابق فوريًا
+           1) اللمس الناطق — مع إيقاف الصوت السابق فورًا
         ============================================================ */
         document.addEventListener("mouseover", function (e) {
+
             let text = e.target.innerText.trim();
             if (text.length === 0) return;
 
-            // 🔥 إيقاف القراءة القديمة فورًا
             window.speechSynthesis.cancel();
 
-            // 🎤 قراءة النص الجديد
             const speak = new SpeechSynthesisUtterance(text);
             speak.lang = "ar-SA";
             speak.rate = 1.05;
             window.speechSynthesis.speak(speak);
 
-            // 🤟 لغة الإشارة
             let found = null;
             for (let w of text.split(" ")) {
                 if (signDictionary[w]) {
@@ -153,7 +176,6 @@
                 let selected = e.target.value;
                 if (!selected || selected.trim() === "") return;
 
-                // أوقف أي نطق سابق
                 window.speechSynthesis.cancel();
 
                 let msg = new SpeechSynthesisUtterance("لقد اخترت " + selected);
@@ -163,7 +185,6 @@
                 window.speechSynthesis.speak(msg);
             }
         });
-
     </script>
 
 </body>
