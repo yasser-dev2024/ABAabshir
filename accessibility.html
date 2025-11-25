@@ -18,8 +18,8 @@
     <div id="signBox"
          style="
          position: fixed;
-         bottom: 20px;     /* ← نقلناه للأسفل */
-         left: 20px;       /* ← نقلناه لليسار */
+         bottom: 20px;
+         left: 20px;
          width: 140px;
          height: 200px;
          background: rgba(0,0,0,0.55);
@@ -50,30 +50,25 @@
         </p>
 
         <!-- زر تفعيل قارئ الشاشة -->
-        <button 
-            onclick="enableTapReading()
-"
+        <button onclick="enableTapReading()"
             class="w-full bg-blue-600 text-white py-3 mt-4 rounded-xl shadow font-bold hover:bg-blue-700 transition">
             🔊 تفعيل القارئ الصوتي (Screen Reader)
         </button>
 
         <!-- زر تفعيل تكبير الشاشة -->
-        <button 
-            onclick="enableZoomMode()"
+        <button onclick="enableZoomMode()"
             class="w-full bg-purple-600 text-white py-3 mt-3 rounded-xl shadow font-bold hover:bg-purple-700 transition">
             🔍 تفعيل وضع التكبير البصري
         </button>
 
         <!-- زر تفعيل لغة الإشارة -->
-        <button 
-            onclick="showSignLanguageVideo()"
+        <button onclick="showSignLanguageVideo()"
             class="w-full bg-orange-500 text-white py-3 mt-3 rounded-xl shadow font-bold hover:bg-orange-600 transition">
             🤟 مترجم لغة الإشارة (الأصم)
         </button>
 
         <!-- زر قراءة النص -->
-        <button 
-            onclick="speakText(document.querySelector('p').innerText)"
+        <button onclick="speakText(document.querySelector('p').innerText)"
             class="w-full bg-green-700 text-white py-3 mt-3 rounded-xl shadow font-bold hover:bg-green-800 transition">
             🎧 قراءة النص المعروض الآن
         </button>
@@ -90,7 +85,7 @@
     <script src="smart-access.js"></script>
 
     <!-- ======================================================
-         نظام اللمس الناطق + مترجم لغة الإشارة (مدمج داخل الملف)
+         نظام اللمس الناطق + إيقاف الصوت + دعم قراءة القوائم
     ======================================================= -->
     <script>
         const signBox = document.getElementById("signBox");
@@ -121,19 +116,25 @@
             "خاصة": "🤟"
         };
 
+        /* ============================================================
+           1) اللمس الناطق — مع إيقاف الصوت السابق فوريًا
+        ============================================================ */
         document.addEventListener("mouseover", function (e) {
             let text = e.target.innerText.trim();
             if (text.length === 0) return;
 
+            // 🔥 إيقاف القراءة القديمة فورًا
+            window.speechSynthesis.cancel();
+
+            // 🎤 قراءة النص الجديد
             const speak = new SpeechSynthesisUtterance(text);
             speak.lang = "ar-SA";
             speak.rate = 1.05;
             window.speechSynthesis.speak(speak);
 
-            let words = text.split(" ");
+            // 🤟 لغة الإشارة
             let found = null;
-
-            for (let w of words) {
+            for (let w of text.split(" ")) {
                 if (signDictionary[w]) {
                     found = signDictionary[w];
                     break;
@@ -142,6 +143,27 @@
 
             signBox.innerText = found ? found : "🤟 إشارة النص";
         });
+
+        /* ============================================================
+           2) قراءة اختيار القوائم المنسدلة بصوت: "لقد اخترت ..."
+        ============================================================ */
+        document.addEventListener("change", function (e) {
+            if (e.target.tagName === "SELECT") {
+
+                let selected = e.target.value;
+                if (!selected || selected.trim() === "") return;
+
+                // أوقف أي نطق سابق
+                window.speechSynthesis.cancel();
+
+                let msg = new SpeechSynthesisUtterance("لقد اخترت " + selected);
+                msg.lang = "ar-SA";
+                msg.rate = 1.0;
+
+                window.speechSynthesis.speak(msg);
+            }
+        });
+
     </script>
 
 </body>

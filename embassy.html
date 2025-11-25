@@ -15,8 +15,8 @@
     <div id="signBox"
          style="
          position: fixed;
-         bottom: 20px;      /* ← تم نقلها للأسفل */
-         left: 20px;        /* ← تم نقلها لليسار */
+         bottom: 20px;
+         left: 20px;
          width: 140px;
          height: 200px;
          background: rgba(0,0,0,0.55);
@@ -34,7 +34,7 @@
          مرر الماوس على النص<br>لعرض لغة الإشارة
     </div>
 
-    <!-- ===== صندوق الصفحة بين الهيدر والفوتر ===== -->
+    <!-- ===== صندوق الصفحة ===== -->
     <div class="page-wrapper">
 
         <h2 class="text-center text-xl font-bold text-green-700 mb-4">
@@ -81,7 +81,7 @@
                 </select>
             </div>
 
-            <!-- وصف البلاغ -->
+            <!-- وصف الحالة -->
             <div>
                 <label class="font-bold text-gray-700">وصف الحالة</label>
                 <textarea id="details" rows="4"
@@ -89,14 +89,14 @@
                     placeholder="اكتب تفاصيل البلاغ هنا..."></textarea>
             </div>
 
-            <!-- إرفاق مرفق -->
+            <!-- إرفاق ملف -->
             <div>
                 <label class="font-bold text-gray-700">إرفاق ملف أو صورة (اختياري)</label>
                 <input type="file" id="attachment"
                        class="w-full mt-2 p-3 rounded-xl shadow border bg-white">
             </div>
 
-            <!-- تشغيل الكاميرا فيديو 15 ثانية -->
+            <!-- تشغيل الكاميرا -->
             <button onclick="startEmergencyVideo()"
                 class="w-full bg-red-600 text-white py-3 rounded-xl font-bold shadow hover:bg-red-700">
                 تشغيل كاميرا الطوارئ (يسجّل 15 ثانية)
@@ -110,7 +110,7 @@
                 إرسال البلاغ
             </button>
 
-            <!-- العودة للرئيسية -->
+            <!-- العودة -->
             <a href="index.html"
                 class="block text-center bg-gray-300 text-gray-800 py-4 rounded-xl text-lg font-bold shadow hover:bg-gray-400">
                 العودة للرئيسية
@@ -121,7 +121,6 @@
 
     <!-- ========== سكربتات أساسية ========== -->
     <script>
-        /* تحديد الموقع الجغرافي */
         function detectLocation() {
             if (!navigator.geolocation) {
                 locationStatus.textContent = "المتصفح لا يدعم تحديد الموقع.";
@@ -129,7 +128,7 @@
             }
 
             navigator.geolocation.getCurrentPosition(
-                (pos) => {
+                () => {
                     locationStatus.textContent =
                         "تم تحديد موقعك بنجاح (جاهز للإرسال ✔)";
                 },
@@ -139,7 +138,6 @@
             );
         }
 
-        /* تسجيل فيديو 15 ثانية */
         function startEmergencyVideo() {
             let video = document.getElementById("preview");
 
@@ -158,7 +156,6 @@
                 .catch(() => alert("فشل تشغيل الكاميرا!"));
         }
 
-        /* إرسال البلاغ */
         function sendForm() {
             alert("✔ تم إرسال البلاغ بنجاح إلى السفارة.");
         }
@@ -167,7 +164,7 @@
     <script src="smart-access.js"></script>
 
     <!-- ======================================================
-         نظام اللمس الناطق + مترجم لغة الإشارة (مدمج داخل الملف)
+         اللمس الناطق + إيقاف النطق + قراءة القوائم المنسدلة
     ======================================================= -->
     <script>
         const signBox = document.getElementById("signBox");
@@ -192,25 +189,28 @@
             "خاصة": "🤟",
             "الإشارة": "✋",
             "قراءة": "👂",
-            "نص": "📘",
-            "ذوي": "🤲",
-            "احتياجات": "✋",
-            "خاصة": "🤟"
+            "نص": "📘"
         };
 
+        /* ============================================================
+           1) اللمس الناطق — مع إيقاف الصوت السابق فوراً
+        ============================================================ */
         document.addEventListener("mouseover", function (e) {
+
             let text = e.target.innerText.trim();
             if (text.length === 0) return;
 
+            // 🔥 إيقاف الصوت القديم
+            window.speechSynthesis.cancel();
+
+            // 🎤 نطق النص الجديد
             const speak = new SpeechSynthesisUtterance(text);
             speak.lang = "ar-SA";
             speak.rate = 1.05;
             window.speechSynthesis.speak(speak);
 
-            let words = text.split(" ");
             let found = null;
-
-            for (let w of words) {
+            for (let w of text.split(" ")) {
                 if (signDictionary[w]) {
                     found = signDictionary[w];
                     break;
@@ -218,6 +218,25 @@
             }
 
             signBox.innerText = found ? found : "🤟 إشارة النص";
+        });
+
+        /* ============================================================
+           2) نطق القوائم المنسدلة: "لقد اخترت ..."
+        ============================================================ */
+        document.addEventListener("change", function (e) {
+            if (e.target.tagName === "SELECT") {
+
+                let selected = e.target.value;
+                if (!selected) return;
+
+                window.speechSynthesis.cancel();
+
+                let msg = new SpeechSynthesisUtterance("لقد اخترت " + selected);
+                msg.lang = "ar-SA";
+                msg.rate = 1;
+
+                window.speechSynthesis.speak(msg);
+            }
         });
     </script>
 

@@ -84,14 +84,13 @@
 
         const video = document.createElement("video");
         video.src = videos[0];
-        video.style.width = "160px";      /* مناسب للجوال */
+        video.style.width = "160px";  
         video.style.height = "auto";
-        video.style.borderRadius = "12px"; /* الفيديو أنيق بدون خلفية */
+        video.style.borderRadius = "12px"; 
         video.autoplay = true;
         video.muted = true;
         video.playsInline = true;
 
-        /* عند انتهاء الفيديو → تشغيل الفيديو التالي تلقائياً */
         video.onended = () => {
             currentIndex = (currentIndex + 1) % videos.length;
             video.src = videos[currentIndex];
@@ -106,7 +105,6 @@
         signText.style.marginTop = "6px";
         signText.style.textAlign = "center";
 
-        /* إضافتهم */
         signBox.appendChild(video);
         signBox.appendChild(signText);
 
@@ -133,13 +131,18 @@
             "نص": "📘 نص"
         };
 
-        /* اللمس الناطق + لغة الإشارة */
+        /* ============================================================
+           اللمس الناطق — مع إيقاف النطق السابق عند لمس نص جديد
+        ============================================================ */
         document.addEventListener("mouseover", function (e) {
 
             let text = e.target.innerText.trim();
             if (text.length === 0) return;
 
-            // 🎤 النطق
+            // 🔥 إيقاف أي صوت سابق فوراً
+            window.speechSynthesis.cancel();
+
+            // 🎤 ابدأ نطق النص الجديد
             const speak = new SpeechSynthesisUtterance(text);
             speak.lang = "ar-SA";
             speak.rate = 1.0;
@@ -156,6 +159,26 @@
             }
 
             signText.innerText = found ? found : "🤟 إشارة النص";
+        });
+
+        /* ============================================================
+           نطق اختيار القائمة المنسدلة — "لقد اخترت ..."
+        ============================================================ */
+
+        document.addEventListener("change", function(e) {
+            if (e.target.tagName === "SELECT") {
+
+                let selected = e.target.value;
+                if (!selected || selected.trim() === "") return;
+
+                window.speechSynthesis.cancel();
+
+                let msg = new SpeechSynthesisUtterance("لقد اخترت " + selected);
+                msg.lang = "ar-SA";
+                msg.rate = 1.0;
+
+                window.speechSynthesis.speak(msg);
+            }
         });
 
     </script>
