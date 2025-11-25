@@ -9,14 +9,79 @@ function speakText(text) {
     window.speechSynthesis.speak(speech);
 }
 
-/* قراءة النص عند الضغط على أي عنصر */
-document.addEventListener("click", function(e) {
-    if (window.enableTextReading && e.target.innerText.trim() !== "") {
-        speakText(e.target.innerText);
-        if (navigator.vibrate) navigator.vibrate(40);
-    }
-});
+/* ================================
+   DOUBLE CLICK GLOBAL SYSTEM
+   ضغطة = نطق فقط
+   ضغطة ثانية = تنفيذ الأمر
+================================ */
+let lastClickTarget = null;
+let lastClickTime = 0;
 
+document.addEventListener("click", function (e) {
+
+    let target = e.target;
+    let now = Date.now();
+
+    // منع تشغيل لوجيك الدبل كليك على نافذة مترجم الإشارة
+    if (target.closest("#signBox")) return;
+
+    let isInteractive =
+        target.tagName === "A" ||
+        target.tagName === "BUTTON" ||
+        target.tagName === "SELECT" ||
+        target.onclick ||
+        target.getAttribute("href") ||
+        target.getAttribute("role") === "button";
+
+    if (!isInteractive) return;
+
+    // إيقاف التنفيذ الحقيقي للحدث
+    e.preventDefault();
+    e.stopImmediatePropagation();
+
+    let text = target.innerText.trim();
+
+    // إذا كانت ضغطة ثانية خلال 500 مللي ثانية = تنفيذ فعلي
+    if (lastClickTarget === target && (now - lastClickTime < 500)) {
+
+        window.speechSynthesis.cancel(); // إيقاف النطق
+
+        // تنفيذ الروابط
+        if (target.tagName === "A" && target.href) {
+            window.location.href = target.href;
+            return;
+        }
+
+        // تنفيذ الأزرار
+        if (target.tagName === "BUTTON") {
+            let handler = target.getAttribute("onclick");
+            if (handler) eval(handler);
+            return;
+        }
+
+        // تنفيذ SELECT
+        if (target.tagName === "SELECT") {
+            target.dispatchEvent(new Event("change"));
+            return;
+        }
+
+        // إن كان عنصر عليه onclick
+        if (target.onclick) {
+            target.onclick();
+            return;
+        }
+
+        lastClickTarget = null;
+        return;
+    }
+
+    // الضغطة الأولى: نطق فقط
+    window.speechSynthesis.cancel();
+    if (text !== "") speakText(text);
+
+    lastClickTarget = target;
+    lastClickTime = now;
+});
 
 /* ================================
    2 — وضع التكبير البصري
@@ -28,7 +93,6 @@ function enableZoomMode() {
     });
     if (navigator.vibrate) navigator.vibrate([40, 40]);
 }
-
 
 /* ================================
    3 — مترجم لغة الإشارة (فيديو)
@@ -60,7 +124,6 @@ function showSignLanguageVideo() {
     if (navigator.vibrate) navigator.vibrate([60, 30, 60]);
 }
 
-
 /* ================================
    4 — تفعيل قراءة النص عند اللمس
 ================================ */
@@ -68,57 +131,3 @@ function enableTapReading() {
     window.enableTextReading = true;
     if (navigator.vibrate) navigator.vibrate([60]);
 }
-
-
-
-/* ================================================================
-   5 — نظام الـ Double Click للمكفوفين (على كل العناصر)
-   ضغطة أولى: نطق العنصر فقط
-   ضغطة ثانية: تنفيذ الفعل
-================================================================ */
-let lastClickedElement = null;
-let lastClickTime = 0;
-
-document.addEventListener("click", function (e) {
-
-    // منع تفعيل الـ double-click على signBox
-    if (e.target.closest("#signBox")) return;
-
-    let target = e.target;
-    let text = target.innerText.trim();
-
-    let now = Date.now();
-
-    // هل هي نفس العنصر خلال نصف ثانية = دبل كليك؟
-    if (lastClickedElement === target && (now - lastClickTime) < 500) {
-
-        // 🔥 تنفيذ الفعل الحقيقي للعنصر
-        if (target.tagName === "BUTTON" || target.onclick) {
-            target.click = Function.prototype; // منع النطق من التكرار
-            target.dispatchEvent(new Event("dblclick")); 
-            target.dispatchEvent(new Event("click"));
-        }
-
-        if (target.tagName === "A" && target.href) {
-            window.location.href = target.href;
-        }
-
-        if (target.tagName === "SELECT") {
-            // لا شيء — الاختيار يتم من داخل Change Event
-        }
-
-        // إعادة التهيئة
-        lastClickedElement = null;
-        lastClickTime = 0;
-        return;
-    }
-
-    // الضغطة الأولى: نطق فقط
-    window.speechSynthesis.cancel();
-    if (text !== "") speakText(text);
-
-    // حفظ وقت الضغطة
-    lastClickedElement = target;
-    lastClickTime = now;
-
-});
