@@ -7,11 +7,27 @@
 
     <link rel="stylesheet" href="libs/tailwind.css" />
     <link rel="stylesheet" href="style.css" />
+
+    <style>
+        /* منع تمرير الصفحة */
+        body, html {
+            overflow: hidden;
+            height: 100%;
+        }
+
+        /* جعل المحتوى يتحرك داخليًا فقط */
+        .page-wrapper {
+            height: 100vh;
+            overflow-y: auto;
+            padding: 20px;
+            padding-bottom: 120px;
+        }
+    </style>
 </head>
 
 <body class="font-[Cairo]">
 
-    <!-- ===== نافذة مترجم لغة الإشارة ===== -->
+    <!-- ===== نافذة مترجم الإشارة ===== -->
     <div id="signBox"
          style="
          position: fixed;
@@ -34,7 +50,7 @@
          مرر الماوس على النص<br>لعرض لغة الإشارة
     </div>
 
-    <!-- ===== صندوق الصفحة ===== -->
+    <!-- ===== صفحة كاملة ===== -->
     <div class="page-wrapper">
 
         <h2 class="text-center text-xl font-bold text-green-700 mb-4">
@@ -42,21 +58,6 @@
         </h2>
 
         <div class="space-y-5">
-
-            <!-- اختيار الدولة -->
-            <div>
-                <label class="font-bold text-gray-700">اختر الدولة</label>
-                <select id="country" class="w-full mt-2 p-3 rounded-xl shadow border bg-white">
-                    <option selected disabled>اختر الدولة</option>
-                    <option>السعودية</option>
-                    <option>الإمارات</option>
-                    <option>مصر</option>
-                    <option>تركيا</option>
-                    <option>فرنسا</option>
-                    <option>ألمانيا</option>
-                    <option>أمريكا</option>
-                </select>
-            </div>
 
             <!-- تحديد الموقع -->
             <div>
@@ -91,12 +92,12 @@
 
             <!-- إرفاق ملف -->
             <div>
-                <label class="font-bold text-gray-700">إرفاق ملف أو صورة (اختياري)</label>
+                <label class="font-bold text-gray-700">إرفاق ملف أو صورة</label>
                 <input type="file" id="attachment"
                        class="w-full mt-2 p-3 rounded-xl shadow border bg-white">
             </div>
 
-            <!-- تشغيل الكاميرا -->
+            <!-- كاميرا الطوارئ -->
             <button onclick="startEmergencyVideo()"
                 class="w-full bg-red-600 text-white py-3 rounded-xl font-bold shadow hover:bg-red-700">
                 تشغيل كاميرا الطوارئ (يسجّل 15 ثانية)
@@ -104,8 +105,8 @@
 
             <video id="preview" class="w-full rounded-xl hidden mt-3"></video>
 
-            <!-- إرسال الطلب -->
-            <button onclick="sendForm()"
+            <!-- إرسال البلاغ -->
+            <button id="sendBtn" onclick="sendForm()"
                 class="w-full bg-green-700 text-white py-4 rounded-xl text-lg font-bold shadow hover:bg-green-800">
                 إرسال البلاغ
             </button>
@@ -115,48 +116,107 @@
                 class="block text-center bg-gray-300 text-gray-800 py-4 rounded-xl text-lg font-bold shadow hover:bg-gray-400">
                 العودة للرئيسية
             </a>
-
         </div>
     </div>
 
-    <!-- ========== سكربتات أساسية ========== -->
+    <!-- ========== سكربتات ========== -->
     <script>
+
+        /* =====================================================
+           تحديد الدولة + المدينة تلقائياً
+        ===================================================== */
         function detectLocation() {
+
             if (!navigator.geolocation) {
                 locationStatus.textContent = "المتصفح لا يدعم تحديد الموقع.";
                 return;
             }
 
-            navigator.geolocation.getCurrentPosition(
-                () => {
-                    locationStatus.textContent =
-                        "تم تحديد موقعك بنجاح (جاهز للإرسال ✔)";
-                },
-                () => {
-                    locationStatus.textContent = "فشل تحديد الموقع.";
+            locationStatus.textContent = "جارٍ تحديد موقعك…";
+
+            navigator.geolocation.getCurrentPosition(async (position) => {
+
+                let lat = position.coords.latitude;
+                let lng = position.coords.longitude;
+
+                try {
+                    let url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`;
+
+                    let res = await fetch(url);
+                    let data = await res.json();
+
+                    let country = data.address.country || "";
+                    let city = data.address.city || data.address.town || data.address.village || "";
+
+                    locationStatus.textContent = `أنت في ${country} – ${city}`;
+
+                } 
+                catch {
+                    locationStatus.textContent = "تعذّر تحديد الموقع.";
                 }
-            );
+
+            }, () => {
+                locationStatus.textContent = "فشل تحديد الموقع.";
+            });
         }
+
+
+        /* =====================================================
+           كاميرا الطوارئ + إرفاق تلقائي + إرسال تلقائي
+        ===================================================== */
+        let autoSendTimer;
 
         function startEmergencyVideo() {
             let video = document.getElementById("preview");
+            let fileInput = document.getElementById("attachment");
 
             navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-                .then((stream) => {
+                .then(async (stream) => {
+
                     video.srcObject = stream;
                     video.classList.remove("hidden");
                     video.play();
 
-                    setTimeout(() => {
-                        stream.getTracks().forEach((t) => t.stop());
+                    // التسجيل
+                    let recorder = new MediaRecorder(stream);
+                    let chunks = [];
+
+                    recorder.ondataavailable = e => chunks.push(e.data);
+
+                    recorder.onstop = () => {
+
+                        let blob = new Blob(chunks, { type: "video/mp4" });
+                        let file = new File([blob], "emergency.mp4", { type: "video/mp4" });
+
+                        // إرفاق الملف تلقائياً
+                        let dt = new DataTransfer();
+                        dt.items.add(file);
+                        fileInput.files = dt.files;
+
                         video.classList.add("hidden");
-                        alert("🎥 تم تسجيل فيديو الطوارئ (15 ثانية) وإرفاقه تلقائياً!");
+
+                        alert("🎥 تم تسجيل فيديو الطوارئ وإرفاقه تلقائياً!");
+
+                        // عد تنازلي 10 ثواني
+                        autoSendTimer = setTimeout(() => {
+                            sendForm();
+                        }, 10000);
+                    };
+
+                    recorder.start();
+
+                    // 15 ثانية
+                    setTimeout(() => {
+                        recorder.stop();
+                        stream.getTracks().forEach(t => t.stop());
                     }, 15000);
                 })
                 .catch(() => alert("فشل تشغيل الكاميرا!"));
         }
 
+
         function sendForm() {
+            clearTimeout(autoSendTimer);
             alert("✔ تم إرسال البلاغ بنجاح إلى السفارة.");
         }
     </script>
@@ -164,14 +224,13 @@
     <script src="smart-access.js"></script>
 
     <!-- ======================================================
-         اللمس الناطق + إيقاف النطق + قراءة القوائم المنسدلة
+         اللمس الناطق + قراءة القوائم
     ======================================================= -->
     <script>
         const signBox = document.getElementById("signBox");
 
         const signDictionary = {
             "السفارة": "🤟 إشارة السفارة",
-            "الدولة": "👌 دولة",
             "تحديد": "👉",
             "موقع": "👇",
             "بلاغ": "✋ بلاغ",
@@ -185,25 +244,17 @@
             "ملف": "📄",
             "صورة": "📷",
             "فيديو": "🎥",
-            "خدمات": "🤲",
-            "خاصة": "🤟",
             "الإشارة": "✋",
             "قراءة": "👂",
             "نص": "📘"
         };
 
-        /* ============================================================
-           1) اللمس الناطق — مع إيقاف الصوت السابق فوراً
-        ============================================================ */
         document.addEventListener("mouseover", function (e) {
-
             let text = e.target.innerText.trim();
             if (text.length === 0) return;
 
-            // 🔥 إيقاف الصوت القديم
             window.speechSynthesis.cancel();
 
-            // 🎤 نطق النص الجديد
             const speak = new SpeechSynthesisUtterance(text);
             speak.lang = "ar-SA";
             speak.rate = 1.05;
@@ -218,25 +269,6 @@
             }
 
             signBox.innerText = found ? found : "🤟 إشارة النص";
-        });
-
-        /* ============================================================
-           2) نطق القوائم المنسدلة: "لقد اخترت ..."
-        ============================================================ */
-        document.addEventListener("change", function (e) {
-            if (e.target.tagName === "SELECT") {
-
-                let selected = e.target.value;
-                if (!selected) return;
-
-                window.speechSynthesis.cancel();
-
-                let msg = new SpeechSynthesisUtterance("لقد اخترت " + selected);
-                msg.lang = "ar-SA";
-                msg.rate = 1;
-
-                window.speechSynthesis.speak(msg);
-            }
         });
     </script>
 
