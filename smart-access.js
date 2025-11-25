@@ -1,152 +1,79 @@
-/* ================================
-   1 — قارئ صوتي للنصوص
-================================ */
-function speakText(text) {
-    const speech = new SpeechSynthesisUtterance(text);
-    speech.lang = "ar-SA";
-    speech.rate = 1.05;
-    speech.pitch = 1;
-    window.speechSynthesis.speak(speech);
+/* ==========================================================
+   نظام دبل كليك موحّد للكمبيوتر والجوال
+   ضغطة = نطق فقط
+   ضغطة ثانية = تنفيذ الفعل
+========================================================== */
+
+let lastClickTarget = null;
+let lastClickTime = 0;
+
+function speak(text) {
+    window.speechSynthesis.cancel();
+    const s = new SpeechSynthesisUtterance(text);
+    s.lang = "ar-SA";
+    s.rate = 1.05;
+    window.speechSynthesis.speak(s);
 }
 
+document.addEventListener("click", function (e) {
 
-/* ================================================================
-   2 — نظام دبل كليك شامل يعمل على:
-      - الروابط A
-      - الأزرار BUTTON
-      - القوائم SELECT
-      - أي عنصر عليه onclick
-      - الهاتف + الكمبيوتر
-================================================================ */
+    let target = e.target;
+    let now = Date.now();
 
-let lastTouchTarget = null;
-let lastTouchTime = 0;
+    // استبعاد مترجم الإشارة من النظام
+    if (target.closest("#signBox")) return;
 
-// منع تنفيذ click الحقيقي على العناصر التفاعلية
-function isInteractive(el) {
-    return (
-        el.tagName === "A" ||
-        el.tagName === "BUTTON" ||
-        el.tagName === "SELECT" ||
-        el.onclick ||
-        el.getAttribute("href") ||
-        el.getAttribute("role") === "button"
-    );
-}
+    // عناصر تفاعلية فقط
+    let interactive =
+        target.tagName === "A" ||
+        target.tagName === "BUTTON" ||
+        target.tagName === "SELECT" ||
+        target.getAttribute("onclick") ||
+        target.getAttribute("href");
 
-/* ====== منع اللمس المباشر على الهاتف للعناصر التفاعلية فقط ====== */
-document.addEventListener(
-    "touchstart",
-    function (e) {
-        if (isInteractive(e.target)) {
-            e.preventDefault(); // يمنع تنفيذ الضغط الحقيقي
-        }
-    },
-    { passive: false }
-);
+    if (!interactive) return;
 
-/* ====== نظام الدبل كليك ====== */
-document.addEventListener(
-    "click",
-    function (e) {
-        let target = e.target;
+    // منع التنفيذ الفوري الافتراضي
+    e.preventDefault();
+    e.stopImmediatePropagation();
 
-        if (!isInteractive(target)) return;
+    let text = target.innerText.trim();
 
-        let now = Date.now();
+    // لو دبل كليك خلال 500ms = تنفيذ
+    if (lastClickTarget === target && (now - lastClickTime) < 500) {
 
-        // إيقاف التنفيذ الحقيقي
-        e.preventDefault();
-        e.stopImmediatePropagation();
-
-        let text = target.innerText.trim();
-
-        // هل هذا هو الضغط الثاني؟
-        if (lastTouchTarget === target && now - lastTouchTime < 500) {
-            window.speechSynthesis.cancel();
-
-            if (target.tagName === "A" && target.href) {
-                window.location.href = target.href;
-                return;
-            }
-
-            if (target.tagName === "BUTTON") {
-                let handler = target.getAttribute("onclick");
-                if (handler) eval(handler);
-                return;
-            }
-
-            if (target.tagName === "SELECT") {
-                target.dispatchEvent(new Event("change"));
-                return;
-            }
-
-            if (typeof target.onclick === "function") {
-                target.onclick();
-                return;
-            }
-
-            lastTouchTarget = null;
+        // روابط
+        if (target.tagName === "A" && target.href) {
+            window.location.href = target.href;
             return;
         }
 
-        // الضغطة الأولى = نطق فقط
-        window.speechSynthesis.cancel();
-        if (text !== "") speakText(text);
+        // أزرار
+        if (target.tagName === "BUTTON") {
+            let handler = target.getAttribute("onclick");
+            if (handler) eval(handler);
+            return;
+        }
 
-        lastTouchTarget = target;
-        lastTouchTime = now;
-    },
-    true
-);
+        // قوائم
+        if (target.tagName === "SELECT") {
+            target.dispatchEvent(new Event("change"));
+            return;
+        }
 
+        // onclick مباشر
+        if (typeof target.onclick === "function") {
+            target.onclick();
+            return;
+        }
 
+        lastClickTarget = null;
+        return;
+    }
 
-/* ================================
-   3 — وضع التكبير البصري
-================================ */
-function enableZoomMode() {
-    document.body.style.fontSize = "20px";
-    document.querySelectorAll("*").forEach((el) => {
-        el.style.lineHeight = "1.6";
-    });
-    if (navigator.vibrate) navigator.vibrate([40, 40]);
-}
+    // الضغطة الأولى: نطق فقط
+    if (text !== "") speak(text);
 
-/* ================================
-   4 — مترجم لغة الإشارة (فيديو)
-================================ */
-function showSignLanguageVideo() {
-    let videoBox = document.createElement("div");
-    videoBox.style.position = "fixed";
-    videoBox.style.bottom = "85px";
-    videoBox.style.left = "10px";
-    videoBox.style.width = "150px";
-    videoBox.style.height = "200px";
-    videoBox.style.background = "rgba(0,0,0,0.7)";
-    videoBox.style.borderRadius = "10px";
-    videoBox.style.padding = "5px";
-    videoBox.style.zIndex = "99999";
-    videoBox.style.backdropFilter = "blur(4px)";
-
-    let video = document.createElement("video");
-    video.src = "assets/videos/sign.mp4";
-    video.autoplay = true;
-    video.loop = true;
-    video.style.width = "100%";
-    video.style.height = "100%";
-    video.style.borderRadius = "10px";
-
-    videoBox.appendChild(video);
-    document.body.appendChild(videoBox);
-
-    if (navigator.vibrate) navigator.vibrate([60, 30, 60]);
-}
-
-/* ================================
-   5 — تفعيل قراءة النص عند اللمس
-================================ */
-function enableTapReading() {
-    window.enableTextReading = true;
-    if (navigator.vibrate) navigator.vibrate([60]);
-}
+    lastClickTarget = target;
+    lastClickTime = now;
+});
