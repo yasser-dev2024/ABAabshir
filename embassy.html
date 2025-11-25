@@ -11,6 +11,29 @@
 
 <body class="font-[Cairo]">
 
+    <!-- ===== نافذة مترجم لغة الإشارة ===== -->
+    <div id="signBox"
+         style="
+         position: fixed;
+         top: 160px;
+         right: 10px;
+         width: 140px;
+         height: 200px;
+         background: rgba(0,0,0,0.55);
+         border-radius: 15px;
+         backdrop-filter: blur(6px);
+         padding: 10px;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         color: #fff;
+         font-weight: bold;
+         text-align: center;
+         font-size: 14px;
+         z-index: 999999;">
+         مرر الماوس على النص<br>لعرض لغة الإشارة
+    </div>
+
     <!-- ===== صندوق الصفحة بين الهيدر والفوتر ===== -->
     <div class="page-wrapper">
 
@@ -96,7 +119,7 @@
         </div>
     </div>
 
-    <!-- ========== سكربت ========== -->
+    <!-- ========== سكربتات أساسية ========== -->
     <script>
         /* تحديد الموقع الجغرافي */
         function detectLocation() {
@@ -139,6 +162,63 @@
         function sendForm() {
             alert("✔ تم إرسال البلاغ بنجاح إلى السفارة.");
         }
+    </script>
+
+    <script src="smart-access.js"></script>
+
+    <!-- ======================================================
+         نظام اللمس الناطق + مترجم لغة الإشارة (مدمج داخل الملف)
+    ======================================================= -->
+    <script>
+        const signBox = document.getElementById("signBox");
+
+        const signDictionary = {
+            "السفارة": "🤟 إشارة السفارة",
+            "الدولة": "👌 دولة",
+            "تحديد": "👉",
+            "موقع": "👇",
+            "بلاغ": "✋ بلاغ",
+            "أمني": "✊ أمني",
+            "طارئ": "🚨",
+            "مساعدة": "👐 مساعدة",
+            "جواز": "📘",
+            "سفر": "✈️",
+            "إرسال": "📤",
+            "عودة": "↩️",
+            "ملف": "📄",
+            "صورة": "📷",
+            "فيديو": "🎥",
+            "خدمات": "🤲",
+            "خاصة": "🤟",
+            "الإشارة": "✋",
+            "قراءة": "👂",
+            "نص": "📘",
+            "ذوي": "🤲",
+            "احتياجات": "✋",
+            "خاصة": "🤟"
+        };
+
+        document.addEventListener("mouseover", function (e) {
+            let text = e.target.innerText.trim();
+            if (text.length === 0) return;
+
+            const speak = new SpeechSynthesisUtterance(text);
+            speak.lang = "ar-SA";
+            speak.rate = 1.05;
+            window.speechSynthesis.speak(speak);
+
+            let words = text.split(" ");
+            let found = null;
+
+            for (let w of words) {
+                if (signDictionary[w]) {
+                    found = signDictionary[w];
+                    break;
+                }
+            }
+
+            signBox.innerText = found ? found : "🤟 إشارة النص";
+        });
     </script>
 
 </body>

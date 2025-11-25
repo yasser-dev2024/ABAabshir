@@ -1,20 +1,35 @@
+/* ========== إعدادات الخلفية العامة لجميع الصفحات ========== */
 body {
     font-family: 'Cairo', sans-serif;
+
     background-image: url("assets/images/abshir-bg.jpg");
     background-size: cover;
     background-repeat: no-repeat;
     background-position: top center;
     background-attachment: fixed;
+
     height: 100vh;
     overflow: hidden;
     margin: 0;
+    padding: 0;
 }
 
-/* الحاوية الخاصة بكل الصفحات */
+/* خلفية كـ صورة ثابتة (لمن يحتاجها بعنصر <img>) */
+.bg-img {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    object-fit: cover;
+    z-index: -1;
+}
+
+/* ========== الحاوية الخاصة بكل الصفحات (بين الهيدر والفوتر) ========== */
 .page-wrapper {
     position: absolute;
-    top: 160px;
-    bottom: 80px;
+    top: 160px;     /* بداية المحتوى */
+    bottom: 80px;   /* نهاية المحتوى قبل الفوتر */
     left: 4%;
     right: 4%;
 
@@ -22,5 +37,54 @@ body {
     backdrop-filter: blur(3px);
     border-radius: 18px;
     padding: 18px;
-    overflow: auto;
+
+    overflow: auto; /* يسمح بتحريك المحتوى داخل الحاوية فقط */
+}
+
+/* تحسين الحقول */
+input, select, textarea {
+    background-color: rgba(255, 255, 255, 0.90) !important;
+    border-radius: 15px;
+}
+
+/* تحسين الأزرار */
+button {
+    transition: 0.2s ease;
+}
+button:hover {
+    transform: scale(1.03);
+}
+
+/* ========================================================= */
+/* =============== صندوق مترجم لغة الإشارة ================= */
+/* ========================================================= */
+
+#signLangBox {
+    position: fixed;
+    bottom: 15px;
+    left: 15px;
+    background: rgba(0, 0, 0, 0.70);
+    color: #fff;
+    padding: 14px 18px;
+    border-radius: 16px;
+    font-size: 14px;
+    max-width: 220px;
+    z-index: 999999; /* فوق كل شيء */
+    backdrop-filter: blur(4px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.35);
+}
+
+#signLangClose {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #ff4444;
+    color: white;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    font-size: 12px;
+    text-align: center;
+    cursor: pointer;
+    line-height: 22px;
 }

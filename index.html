@@ -12,50 +12,118 @@
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body class="bg-gray-50 font-[Cairo]">
+<body class="font-[Cairo]">
 
-    <!-- ====== FULL IMAGE + BUTTONS ====== -->
-    <div class="relative w-full">
+    <!-- ===== الخلفية (من style.css وليس IMG) ===== -->
+    <div class="bg-img"></div>
 
-        <!-- الخلفية الكاملة -->
-        <img src="assets/images/abshir-bg.jpg" 
-             class="w-full h-auto block" 
-             alt="abshir">
+    <!-- ===== الحاوية بين الهيدر والفوتر ===== -->
+    <div class="page-wrapper">
 
         <!-- ==================== زر 1 ==================== -->
         <a href="embassy.html"
-           class="absolute left-1/2 transform -translate-x-1/2 bg-green-700 text-white text-center
-                  w-4/5 py-4 rounded-xl shadow-xl font-bold text-lg opacity-95 hover:opacity-100"
-           style="top: 240px;">
+           class="block bg-green-700 text-white text-center
+                  w-full py-4 rounded-xl shadow-xl font-bold text-lg opacity-95 hover:opacity-100 mb-4">
             التواصل مع السفارة
         </a>
 
         <!-- ==================== زر 2 ==================== -->
         <a href="accessibility.html"
-           class="absolute left-1/2 transform -translate-x-1/2 bg-green-500 text-white text-center
-                  w-4/5 py-4 rounded-xl shadow-xl font-bold text-lg opacity-95 hover:opacity-100"
-           style="top: 340px;">
+           class="block bg-green-500 text-white text-center
+                  w-full py-4 rounded-xl shadow-xl font-bold text-lg opacity-95 hover:opacity-100 mb-4">
             خدمات ذوي الاحتياجات الخاصة
         </a>
 
         <!-- ==================== زر 3 ==================== -->
         <a href="reports.html"
-           class="absolute left-1/2 transform -translate-x-1/2 bg-green-700 text-white text-center
-                  w-4/5 py-4 rounded-xl shadow-xl font-bold text-lg opacity-95 hover:opacity-100"
-           style="top: 440px;">
+           class="block bg-green-700 text-white text-center
+                  w-full py-4 rounded-xl shadow-xl font-bold text-lg opacity-95 hover:opacity-100 mb-4">
             البلاغات الأمنية
         </a>
 
         <!-- ==================== زر 4 ==================== -->
         <a href="contact-officer.html"
-           class="absolute left-1/2 transform -translate-x-1/2 bg-green-500 text-white text-center
-                  w-4/5 py-4 rounded-xl shadow-xl font-bold text-lg opacity-95 hover:opacity-100"
-           style="top: 540px;">
+           class="block bg-green-500 text-white text-center
+                  w-full py-4 rounded-xl shadow-xl font-bold text-lg opacity-95 hover:opacity-100">
             طلب التواصل مع مسؤول
         </a>
 
     </div>
 
     <script src="script.js"></script>
+    <script src="smart-access.js"></script>
+
+    <!-- ========== إضافة ميزة اللمس الناطق + مترجم لغة الإشارة ========== -->
+    <script>
+
+        /* نافذة مترجم الإشارة */
+        const signBox = document.createElement("div");
+        signBox.style.position = "fixed";
+        signBox.style.top = "160px";
+        signBox.style.right = "10px";
+        signBox.style.width = "140px";
+        signBox.style.height = "200px";
+        signBox.style.background = "rgba(0,0,0,0.55)";
+        signBox.style.borderRadius = "15px";
+        signBox.style.backdropFilter = "blur(6px)";
+        signBox.style.padding = "10px";
+        signBox.style.display = "flex";
+        signBox.style.alignItems = "center";
+        signBox.style.justifyContent = "center";
+        signBox.style.color = "#fff";
+        signBox.style.fontWeight = "bold";
+        signBox.style.textAlign = "center";
+        signBox.style.fontSize = "14px";
+        signBox.style.zIndex = "999999";
+        signBox.innerText = "مرر الماوس على أي نص\nلعرض لغة الإشارة 👋";
+        document.body.appendChild(signBox);
+
+        /* قاموس الإشارة العربية */
+        const signDictionary = {
+            "السفارة": "🤟 السفارة",
+            "الدولة": "👌 الدولة",
+            "بلاغ": "✋ بلاغ",
+            "طارئ": "🚨 طارئ",
+            "أمني": "✊ أمني",
+            "مساعدة": "👐 مساعدة",
+            "جواز": "📘 جواز",
+            "سفر": "✈️ سفر",
+            "إرسال": "📤 إرسال",
+            "عودة": "↩️ عودة",
+            "صورة": "📷 صورة",
+            "فيديو": "🎥 فيديو",
+            "خدمات": "🤲 خدمات",
+            "خاصة": "🤟 خاصة",
+            "الإشارة": "✋ إشارة",
+            "قراءة": "👂 قراءة",
+            "نص": "📘 نص"
+        };
+
+        /* اللمس الناطق + لغة الإشارة */
+        document.addEventListener("mouseover", function (e) {
+
+            let text = e.target.innerText.trim();
+            if (text.length === 0) return;
+
+            // النطق
+            const speak = new SpeechSynthesisUtterance(text);
+            speak.lang = "ar-SA";
+            speak.rate = 1.0;
+            window.speechSynthesis.speak(speak);
+
+            // لغة الإشارة
+            let words = text.split(" ");
+            let found = null;
+            for (let w of words) {
+                if (signDictionary[w]) {
+                    found = signDictionary[w];
+                    break;
+                }
+            }
+            signBox.innerText = found ? found : "🤟 إشارة النص";
+        });
+
+    </script>
+
 </body>
 </html>
