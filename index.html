@@ -49,8 +49,8 @@
     <!-- ===== الحاوية بين الهيدر والفوتر (أضفت فقط class="desktop-wrapper") ===== -->
     <div class="page-wrapper desktop-wrapper">
 
-        <!-- ==================== زر 1 ==================== -->
-        <a href="embassy.html"
+        <!-- ==================== زر 1 (تم التعديل فقط على الرابط) ==================== -->
+        <a href="embassy-info.html"
            class="block bg-green-700 text-white text-center
                   w-full py-4 rounded-xl shadow-xl font-bold text-lg opacity-95 hover:opacity-100 mb-4">
             التواصل مع السفارة
@@ -163,24 +163,19 @@
             "نص": "📘 نص"
         };
 
-        /* ============================================================
-           اللمس الناطق — مع إيقاف النطق السابق عند لمس نص جديد
-        ============================================================ */
+        /* ====================== اللمس الناطق ====================== */
         document.addEventListener("mouseover", function (e) {
 
             let text = e.target.innerText.trim();
             if (text.length === 0) return;
 
-            // 🔥 إيقاف أي صوت سابق فوراً
             window.speechSynthesis.cancel();
 
-            // 🎤 ابدأ نطق النص الجديد
             const speak = new SpeechSynthesisUtterance(text);
             speak.lang = "ar-SA";
             speak.rate = 1.0;
             window.speechSynthesis.speak(speak);
 
-            // 🤟 لغة الإشارة
             let words = text.split(" ");
             let found = null;
             for (let w of words) {
@@ -193,10 +188,7 @@
             signText.innerText = found ? found : "🤟 إشارة النص";
         });
 
-        /* ============================================================
-           نطق اختيار القائمة المنسدلة — "لقد اخترت ..."
-        ============================================================ */
-
+        /* ====================== النطق عند اختيار القائمة ====================== */
         document.addEventListener("change", function(e) {
             if (e.target.tagName === "SELECT") {
 

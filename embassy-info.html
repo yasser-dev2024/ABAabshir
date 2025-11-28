@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>معلومات التواصل مع السفارة</title>
+
+    <link rel="stylesheet" href="libs/tailwind.css" />
+    <link rel="stylesheet" href="style.css" />
+
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            padding: 20px;
+            margin-top: 110px;   /* 🔥 إنزال النص تحت الهيدر بدون مبالغة */
+        }
+
+        .section-box {
+            background: rgba(255, 255, 255, 0.85);
+            padding: 15px;                     /* 🔥 تقليل البادينج */
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            backdrop-filter: blur(5px);
+            margin-bottom: 18px;               /* 🔥 رفع الأزرار للأعلى */
+            font-size: 15px;                   /* 🔥 تصغير حجم النص قليلاً */
+            line-height: 1.6;                  /* توازن جميل للقراءة */
+        }
+
+        .big-btn {
+            width: 100%;
+            padding: 13px;     /* 🔥 تصغير بسيط للزر */
+            border-radius: 14px;
+            font-size: 17px;
+            font-weight: bold;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+            margin-top: 12px;  /* 🔥 تقليل المسافة لرفع الأزرار */
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2 class="text-center text-xl font-bold text-green-700 mb-4">
+        التواصل مع السفارة
+    </h2>
+
+    <div class="section-box text-gray-800 leading-relaxed">
+        <p>
+            يعتبر التواصل مع السفارة من أهم الخدمات التي يحتاجها أي مواطن خارج المملكة.
+            هذا الزر يوفر لك وسيلة فورية وسهلة للوصول إلى السفارة في مختلف الحالات،
+            سواء كانت حالات طارئة أو طلب مساعدة أو استفسار رسمي.
+        </p>
+
+        <p class="mt-3">
+            في الحالات الطارئة مثل فقدان الجواز، تعرّضك لمشكلة قانونية،
+            أو احتياجك للدعم بشكل عاجل… سفارتك هي خط الأمان الأول لك.
+        </p>
+
+        <p class="mt-3">
+            ومن خلال هذه الخدمة سيكون بإمكانك تحديد موقعك تلقائيًا، إرسال بلاغ،
+            تسجيل فيديو للطوارئ، وإرفاق أي ملفات مباشرة، مما يُسهّل وصول حالتك إلى الجهات المختصة.
+        </p>
+    </div>
+
+    <button onclick="location.href='embassy.html'"
+        class="big-btn bg-green-600 text-white hover:bg-green-700">
+        ابدأ العملية / مشاهدة الفكرة
+    </button>
+
+    <button onclick="location.href='index.html'"
+        class="big-btn bg-gray-300 text-gray-800 hover:bg-gray-400">
+        العودة للرئيسية
+    </button>
+
+</body>
+</html>
