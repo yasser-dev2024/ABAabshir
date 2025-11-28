@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>البلاغات الأمنية</title>
+
+    <link rel="stylesheet" href="libs/tailwind.css" />
+    <link rel="stylesheet" href="style.css" />
+
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-image: url('assets/images/abshir-bg.jpg');
+            background-size: 100% auto;
+            background-repeat: no-repeat;
+            background-position: top center;
+
+            padding: 0;
+            margin: 0;
+            overflow: hidden; /* منع التمرير من الجسم */
+            height: 100vh;
+        }
+
+        /* ===== غلاف المحتوى كامل داخل Scroll ===== */
+        .content-scroll {
+            position: absolute;
+            top: 140px;            /* تحت الهيدر */
+            bottom: 90px;          /* فوق الفوتر */
+            left: 0;
+            right: 0;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .desktop-wrapper {
+            max-width: 750px;
+            margin: 0 auto;
+        }
+
+        .section-box {
+            background: rgba(255, 255, 255, 0.93);
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .input-box {
+            width: 100%;
+            background: rgba(255,255,255,0.97);
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            margin-bottom: 15px;
+        }
+
+        .big-btn {
+            width: 100%;
+            padding: 15px;
+            border-radius: 14px;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 15px;
+            display: block;
+        }
+
+        .green-btn {
+            background-color: #009639;
+            color: #fff;
+        }
+        .green-btn:hover { background-color: #037f30; }
+
+        .red-btn {
+            background-color: #cc0000;
+            color: #fff;
+        }
+        .red-btn:hover { background-color: #aa0000; }
+
+        .footer-bar {
+            width: 100%;
+            height: 75px;
+            background-color: #009639;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            z-index: 999;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ======= محتوى الصفحة داخل Scroll ======= -->
+    <div class="content-scroll">
+
+        <div class="desktop-wrapper">
+
+            <h2 class="text-center text-2xl font-bold text-red-600 mb-5">
+                البلاغات الأمنية
+            </h2>
+
+            <div class="section-box">
+                جميع البلاغات التي يتم تقديمها عبر هذه الخدمة تُعالج بسرية تامة،
+                وتُعد جزءًا من التعاون بين المواطن والدولة في تعزيز الأمن والحفاظ على سلامة المجتمع.
+                <br><br>
+                مشاركتك هنا تُعزز دورك الوطني في حماية الوطن والمواطن.
+            </div>
+
+            <select class="input-box" id="reportType">
+                <option value="">اختر نوع البلاغ</option>
+                <option>بلاغ عن حدث أمني</option>
+                <option>بلاغ عن جريمة إلكترونية</option>
+                <option>بلاغ عن تهديد أو خطورة</option>
+                <option>بلاغ طارئ عاجل</option>
+            </select>
+
+            <textarea class="input-box" rows="4" placeholder="اكتب وصف البلاغ هنا..."></textarea>
+
+            <input type="file" class="input-box" accept="image/*,video/*" />
+
+            <button onclick="getLocation()" class="big-btn green-btn">
+                تحديد الموقع الجغرافي
+            </button>
+
+            <p id="locationResult" class="text-center text-sm text-gray-700 mt-2"></p>
+
+            <button class="big-btn red-btn">
+                إرسال البلاغ الآن
+            </button>
+
+            <a href="index.html" class="big-btn bg-gray-300 text-gray-800 hover:bg-gray-400">
+                العودة للرئيسية
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- ======= الشريط السفلي ======= -->
+    <div class="footer-bar"></div>
+
+    <script>
+        function getLocation() {
+            const result = document.getElementById("locationResult");
+
+            if (!navigator.geolocation) {
+                result.innerText = "المتصفح لا يدعم تحديد الموقع.";
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                pos => {
+                    result.innerText =
+                        "تم تحديد الموقع: " +
+                        pos.coords.latitude.toFixed(5) +
+                        " / " +
+                        pos.coords.longitude.toFixed(5);
+                },
+                () => {
+                    result.innerText = "فشل تحديد الموقع. فعّل الـ GPS.";
+                }
+            );
+        }
+    </script>
+
+</body>
+</html>
