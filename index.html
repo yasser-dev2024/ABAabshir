@@ -46,18 +46,18 @@
     <!-- ===== الخلفية (من style.css وليس IMG) ===== -->
     <div class="bg-img"></div>
 
-    <!-- ===== الحاوية بين الهيدر والفوتر (أضفت فقط class="desktop-wrapper") ===== -->
+    <!-- ===== الحاوية بين الهيدر والفوتر (desktop-wrapper) ===== -->
     <div class="page-wrapper desktop-wrapper">
 
-        <!-- ==================== زر 1 (تم التعديل فقط على الرابط) ==================== -->
+        <!-- ==================== زر 1 — معلومات السفارة ==================== -->
         <a href="embassy-info.html"
            class="block bg-green-700 text-white text-center
                   w-full py-4 rounded-xl shadow-xl font-bold text-lg opacity-95 hover:opacity-100 mb-4">
             التواصل مع السفارة
         </a>
 
-        <!-- ==================== زر 2 ==================== -->
-        <a href="accessibility.html"
+        <!-- ==================== زر 2 — ذوي الاحتياجات الخاصة (تم تغيير الرابط) ==================== -->
+        <a href="accessibility-info.html"
            class="block bg-green-500 text-white text-center
                   w-full py-4 rounded-xl shadow-xl font-bold text-lg opacity-95 hover:opacity-100 mb-4">
             خدمات ذوي الاحتياجات الخاصة
@@ -91,10 +91,10 @@
         /* نافذة مترجم الإشارة — أسفل يسار الشاشة */
         const signBox = document.createElement("div");
         signBox.style.position = "fixed";
-        signBox.style.bottom = "50px";   /* 🔥 تم رفع الفيديو للأعلى بدل 20px */
+        signBox.style.bottom = "50px";
         signBox.style.left = "20px";
 
-        /* 🔥 إزالة المربع والخلفية بالكامل */
+        /* إزالة الخلفية */
         signBox.style.background = "transparent";
         signBox.style.borderRadius = "0";
         signBox.style.backdropFilter = "none";
@@ -116,9 +116,9 @@
 
         const video = document.createElement("video");
         video.src = videos[0];
-        video.style.width = "160px";  
+        video.style.width = "160px";
         video.style.height = "auto";
-        video.style.borderRadius = "12px"; 
+        video.style.borderRadius = "12px";
         video.autoplay = true;
         video.muted = true;
         video.playsInline = true;
@@ -163,7 +163,7 @@
             "نص": "📘 نص"
         };
 
-        /* ====================== اللمس الناطق ====================== */
+        /* اللمس الناطق */
         document.addEventListener("mouseover", function (e) {
 
             let text = e.target.innerText.trim();
@@ -188,7 +188,7 @@
             signText.innerText = found ? found : "🤟 إشارة النص";
         });
 
-        /* ====================== النطق عند اختيار القائمة ====================== */
+        /* نطق اختيار القائمة المنسدلة */
         document.addEventListener("change", function(e) {
             if (e.target.tagName === "SELECT") {
 

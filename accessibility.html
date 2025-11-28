@@ -1,213 +1,84 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>خدمات ذوي الاحتياجات الخاصة</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>تجربة خدمات ذوي الاحتياجات الخاصة</title>
 
-    <link href="libs/tailwind.css" rel="stylesheet">
-    <link href="style.css" rel="stylesheet">
+    <link rel="stylesheet" href="libs/tailwind.css" />
+    <link rel="stylesheet" href="style.css" />
 
     <style>
-        /* منع التمرير نهائيًا */
-        html, body {
-            overflow: hidden;
-            height: 100%;
+        body {
+            font-family: 'Cairo', sans-serif;
+
+            /* ✔ الخلفية الصحيحة – تظهر كاملة بدون قص */
+            background-image: url('assets/images/abshir-bg.jpg');
+            background-size: cover;          /* 🔥 أهم سطر */
+            background-position: top center;
+            background-repeat: no-repeat;
+            background-attachment: scroll !important;
+
+            padding: 20px;
+            overflow-x: hidden;
+            min-height: 100vh;
         }
 
-        /* ضبط الصفحة لتناسب الشاشة بالكامل */
-        .page-wrapper {
-            position: absolute;
-            top: 10%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90%;
-            max-width: 500px;
-            height: 80%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-evenly;
+        .section-box {
+            background: rgba(255, 255, 255, 0.88);
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            backdrop-filter: blur(5px);
+            margin-bottom: 25px;
+            text-align: center;
         }
 
-        /* أزرار أجمل وأكثر ثباتًا */
-        .fixed-btn {
-            padding: 14px;
-            font-size: 17px;
-            font-weight: bold;
-            border-radius: 14px;
-            box-shadow: 0 4px 14px rgba(0,0,0,0.15);
-            transition: 0.2s;
-        }
-        .fixed-btn:hover {
-            transform: translateY(-2px);
-        }
-
-        /* ===== مربّع فيديو مترجم الإشارة ===== */
-        #signVideoBox {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            width: 180px;
-            height: 260px;
-            background: rgba(0,0,0,0.45);
-            border-radius: 15px;
-            backdrop-filter: blur(6px);
-            padding: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 999999;
-            overflow: hidden;
-        }
-
-        #signVideoBox video {
+        .big-btn {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 12px;
+            padding: 15px;
+            border-radius: 14px;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+            margin-top: 15px;
+            display: block;
+            text-align: center;
+        }
+
+        .title-space {
+            margin-top: 100px;
         }
     </style>
 </head>
 
-<body class="font-[Cairo]">
+<body>
 
-    <!-- ===== الخلفية الثابتة ===== -->
-    <img src="assets/images/abshir-bg.jpg" class="bg-img" alt="bg">
+    <h2 class="text-center text-xl font-bold text-green-700 mb-5 title-space">
+        تجربة خدمات ذوي الاحتياجات الخاصة
+    </h2>
 
-    <!-- ============================================================
-         نافذة فيديو مترجم لغة الإشارة (ثابتة بكل الصفحات)
-    ============================================================ -->
-    <div id="signVideoBox">
-        <video id="signVideo" autoplay muted playsinline></video>
+    <div class="section-box">
+        اختر نوع الخدمة المناسبة لتجربتها الآن
     </div>
 
-    <!-- ===== المحتوى الأساسي ===== -->
-    <div class="page-wrapper">
+    <!-- زر لغة الإشارة -->
+    <a href="sign-access.html"
+       class="big-btn bg-green-600 text-white hover:bg-green-700">
+        تجربة خدمات أبشر – لغة الإشارة
+    </a>
 
-        <h2 class="text-center text-2xl font-bold text-green-700">
-            خدمات ذوي الاحتياجات الخاصة
-        </h2>
+    <!-- زر اللمس الناطق -->
+    <a href="voice-access.html"
+       class="big-btn bg-green-700 text-white hover:bg-green-800">
+        تجربة خدمات أبشر – اللمس الناطق
+    </a>
 
-        <p class="text-gray-700 text-sm leading-relaxed text-center">
-            هذه الخدمة تساعد المكفوفين، الصم، وذوي الإعاقة الحركية في استخدام المنصة بسهولة.
-        </p>
-
-        <!-- زر تفعيل التكبير -->
-        <button onclick="enableZoomMode()"
-            class="fixed-btn bg-purple-600 text-white hover:bg-purple-700">
-            🔍 وضع التكبير البصري
-        </button>
-
-        <!-- زر تفعيل لغة الإشارة -->
-        <button onclick="showSignLanguageVideo()"
-            class="fixed-btn bg-orange-500 text-white hover:bg-orange-600">
-            🤟 مترجم لغة الإشارة
-        </button>
-
-        <!-- زر العودة -->
-        <a href="index.html"
-           class="fixed-btn bg-gray-300 text-gray-800 text-center hover:bg-gray-400">
-            العودة للصفحة الرئيسية
-        </a>
-
-    </div>
-
-    <!-- ===== ملفات الذكاء ===== -->
-    <script src="smart-access.js"></script>
-
-    <!-- ======================================================
-         نظام قراءة النصوص + اختيار القوائم + لغة الإشارة
-    ======================================================= -->
-    <script>
-        const signVideo = document.getElementById("signVideo");
-
-        /* ===== مسارات فيديوهات لغة الإشارة ===== */
-        const videos = [
-            "assets/videos/11.mp4",
-            "assets/videos/22.mp4"
-        ];
-
-        let currentVideo = 0;
-
-        /* ===== تشغيل الفيديوهات بالتبديل ===== */
-        function playNextVideo() {
-            signVideo.src = videos[currentVideo];
-            signVideo.play();
-
-            currentVideo = (currentVideo + 1) % videos.length;
-        }
-
-        signVideo.addEventListener("ended", playNextVideo);
-        playNextVideo();
-
-
-        /* ===== قاموس الإشارات النصية (النظام القديم يبقى شغّال) ===== */
-        const signBox = document.getElementById("signVideoBox");
-
-        const signDictionary = {
-            "السفارة": "🤟 إشارة السفارة",
-            "الدولة": "👌 دولة",
-            "تحديد": "👉",
-            "موقع": "👇",
-            "بلاغ": "✋ بلاغ",
-            "أمني": "✊ أمني",
-            "طارئ": "🚨",
-            "مساعدة": "👐 مساعدة",
-            "جواز": "📘",
-            "سفر": "✈️",
-            "إرسال": "📤",
-            "عودة": "↩️",
-            "ملف": "📄",
-            "صورة": "📷",
-            "فيديو": "🎥",
-            "خدمات": "🤲",
-            "خاصة": "🤟",
-            "الإشارة": "✋",
-            "قراءة": "👂",
-            "نص": "📘",
-            "ذوي": "🤲",
-            "احتياجات": "✋"
-        };
-
-        /* ===== 1) اللمس الناطق — مع إيقاف الصوت السابق فورًا ===== */
-        document.addEventListener("mouseover", function (e) {
-
-            let text = e.target.innerText.trim();
-            if (text.length === 0) return;
-
-            window.speechSynthesis.cancel();
-
-            const speak = new SpeechSynthesisUtterance(text);
-            speak.lang = "ar-SA";
-            speak.rate = 1.05;
-            window.speechSynthesis.speak(speak);
-
-            let found = null;
-            for (let w of text.split(" ")) {
-                if (signDictionary[w]) {
-                    found = signDictionary[w];
-                    break;
-                }
-            }
-        });
-
-        /* ===== 2) قراءة اختيار القوائم المنسدلة ===== */
-        document.addEventListener("change", function (e) {
-            if (e.target.tagName === "SELECT") {
-
-                let selected = e.target.value;
-                if (!selected || selected.trim() === "") return;
-
-                window.speechSynthesis.cancel();
-
-                let msg = new SpeechSynthesisUtterance("لقد اخترت " + selected);
-                msg.lang = "ar-SA";
-                msg.rate = 1.0;
-
-                window.speechSynthesis.speak(msg);
-            }
-        });
-    </script>
+    <!-- زر العودة -->
+    <a href="index.html"
+       class="big-btn bg-gray-300 text-gray-800 hover:bg-gray-400">
+        العودة للرئيسية
+    </a>
 
 </body>
 </html>

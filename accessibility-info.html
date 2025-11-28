@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>معلومات التواصل مع السفارة</title>
+
+    <link rel="stylesheet" href="libs/tailwind.css" />
+    <link rel="stylesheet" href="style.css" />
+
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            padding: 15px;              /* 🔥 تصغير البادينج العام */
+        }
+
+        .section-box {
+            background: rgba(255, 255, 255, 0.88);
+            padding: 16px;              /* 🔥 بدل 20px */
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            backdrop-filter: blur(5px);
+            margin-bottom: 18px;        /* 🔥 تقليل المسافات */
+        }
+
+        .section-box p {
+            margin-top: 6px;            /* 🔥 بدل 12px */
+            font-size: 15px;            /* 🔥 تصغير النص قليلاً */
+            line-height: 1.55;
+        }
+
+        .title-header {
+            margin-top: 80px;           /* 🔥 هذه ترفع النص من الهيدر */
+        }
+
+        .big-btn {
+            width: 100%;
+            padding: 13px;              /* 🔥 بدل 15px */
+            border-radius: 14px;
+            font-size: 17px;            /* 🔥 بدل 18px */
+            font-weight: bold;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+            margin-top: 12px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 🔥 تم رفع العنوان لأسفل الهيدر بدقة -->
+    <h2 class="title-header text-center text-2xl font-bold text-green-700 mb-4">
+        خدمات ذوي الاحتياجات الخاصة
+    </h2>
+
+    <div class="section-box text-gray-800 leading-relaxed">
+        <p>
+            هذه الخدمة مصممة خصيصًا لتسهيل استخدام المنصة لذوي الاحتياجات الخاصة،
+            بحيث يحصل كل مستخدم على الأدوات التي تلائم حالته دون تعقيد.
+        </p>
+
+        <p>
+            عند علم النظام بحالة المستخدم يتم تفعيل لغة الإشارة للصم أو ضعاف السمع،
+            حيث تظهر له واجهة خاصة تعرض فيديو يوضح خطوات استخدام الخدمة خطوة بخطوة.
+        </p>
+
+        <p>
+            أما المكفوفون فيتم تفعيل النطق الصوتي تلقائيًا، حيث يقوم النظام بقراءة
+            العناوين والأزرار والتعليمات بدون عرض أي فيديوهات لضمان تجربة بسيطة وسلسة.
+        </p>
+
+        <p>
+            بهذه الطريقة يحصل كل مستخدم على تجربة مخصصة تناسب احتياجه بالكامل.
+        </p>
+    </div>
+
+    <button onclick="location.href='accessibility.html'"
+        class="big-btn bg-green-600 text-white hover:bg-green-700">
+        الانتقال للخدمة / تجربة الفكرة
+    </button>
+
+    <button onclick="location.href='index.html'"
+        class="big-btn bg-gray-300 text-gray-800 hover:bg-gray-400">
+        العودة للرئيسية
+    </button>
+
+</body>
+</html>
