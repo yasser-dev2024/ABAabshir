@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>تجربة اللمس الناطق</title>
+
+    <link rel="stylesheet" href="libs/tailwind.css" />
+    <link rel="stylesheet" href="style.css" />
+
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-image: url('assets/images/abshir-bg.jpg');
+            background-size: cover;
+            background-position: top center;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* 🔥 الأزرار أقرب لبعض + أوضح */
+        .big-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 14px;
+            font-size: 17px;
+            font-weight: bold;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+            margin-top: 10px;      /* 🔹 بدل 15px */
+            display: block;
+            text-align: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        h2 {
+            margin-top: 95px !important;
+        }
+
+        p {
+            font-size: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2 class="text-center text-xl font-bold text-green-700 mb-3">
+        تجربة خدمات أبشر – اللمس الناطق
+    </h2>
+
+    <p class="text-center bg-white px-4 py-2 rounded-xl shadow mb-4">
+        مرّر الماوس أو اضغط مرة واحدة لسماع الخدمة، واضغط مرتين للانتقال إليها
+    </p>
+
+    <!-- ===== خيارات أبشر ===== -->
+
+    <div class="big-btn bg-green-600 text-white hover:bg-green-700"
+         onclick="speakText('حجز موعد المرور')"
+         ondblclick="go('moroor.html')">
+        حجز موعد المرور
+    </div>
+
+    <div class="big-btn bg-green-700 text-white hover:bg-green-800"
+         onclick="speakText('حجز موعد الرخصة')"
+         ondblclick="go('license.html')">
+        حجز موعد الرخصة
+    </div>
+
+    <div class="big-btn bg-green-600 text-white hover:bg-green-700"
+         onclick="speakText('حجز موعد الأحوال المدنية')"
+         ondblclick="go('ahwal.html')">
+        حجز موعد الأحوال المدنية
+    </div>
+
+    <div class="big-btn bg-green-700 text-white hover:bg-green-800"
+         onclick="speakText('إصدار جواز السفر')"
+         ondblclick="go('passport.html')">
+        إصدار جواز السفر
+    </div>
+
+    <!-- زر العودة -->
+    <a href="accessibility.html"
+       class="big-btn bg-gray-300 text-gray-800 hover:bg-gray-400">
+        العودة للصفحة السابقة
+    </a>
+
+    <a href="index.html"
+       class="big-btn bg-green-700 text-white hover:bg-green-800">
+        العودة للرئيسية
+    </a>
+
+
+    <!-- ===== سكربت اللمس الناطق (يشمل كل شيء في الصفحة) ===== -->
+    <script>
+        function speakText(text) {
+            window.speechSynthesis.cancel();
+            const msg = new SpeechSynthesisUtterance(text);
+            msg.lang = "ar-SA";
+            msg.rate = 1.05;
+            window.speechSynthesis.speak(msg);
+        }
+
+        function go(page) {
+            window.location.href = page;
+        }
+
+        /* =======================================================
+           🔥 نطق كامل محتوى الصفحة عند وضع الماوس فوق أي نص
+        ======================================================= */
+        document.addEventListener("mouseover", function(e){
+            let t = e.target.innerText.trim();
+            if (t.length > 0) {
+                speakText(t);
+            }
+        });
+    </script>
+
+</body>
+</html>
