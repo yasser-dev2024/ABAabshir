@@ -11,7 +11,7 @@
     <!-- Styles -->
     <link rel="stylesheet" href="style.css">
 
-    <!-- ===== تنسيق خاص للكمبيوتر فقط لضبط العرض والتوسيط ===== -->
+    <!-- ===== تنسيق خاص للكمبيوتر فقط ===== -->
     <style>
         @media (min-width: 1024px) {
             .desktop-wrapper {
@@ -19,7 +19,6 @@
                 margin: 0 auto;
             }
 
-            /* 🔹 تصغير الهيدر على الكمبيوتر فقط */
             .bg-img {
                 height: 260px !important;
                 background-size: cover;
@@ -27,7 +26,7 @@
             }
         }
 
-        /* 🔹 الشريط السفلي الأخضر */
+        /* الشريط السفلي الأخضر */
         .footer-bar {
             width: 100%;
             height: 75px;
@@ -43,34 +42,34 @@
 
 <body class="font-[Cairo]">
 
-    <!-- ===== الخلفية (من style.css وليس IMG) ===== -->
+    <!-- ===== الخلفية ===== -->
     <div class="bg-img"></div>
 
-    <!-- ===== الحاوية بين الهيدر والفوتر (desktop-wrapper) ===== -->
+    <!-- ===== الحاوية ===== -->
     <div class="page-wrapper desktop-wrapper">
 
-        <!-- ==================== زر 1 — معلومات السفارة ==================== -->
+        <!-- زر 1 -->
         <a href="embassy-info.html"
            class="block bg-green-700 text-white text-center
                   w-full py-4 rounded-xl shadow-xl font-bold text-lg opacity-95 hover:opacity-100 mb-4">
             التواصل مع السفارة
         </a>
 
-        <!-- ==================== زر 2 — ذوي الاحتياجات الخاصة (تم تغيير الرابط) ==================== -->
+        <!-- زر 2 -->
         <a href="accessibility-info.html"
            class="block bg-green-500 text-white text-center
                   w-full py-4 rounded-xl shadow-xl font-bold text-lg opacity-95 hover:opacity-100 mb-4">
             خدمات ذوي الاحتياجات الخاصة
         </a>
 
-        <!-- ==================== زر 3 ==================== -->
+        <!-- زر 3 -->
         <a href="reports.html"
            class="block bg-green-700 text-white text-center
                   w-full py-4 rounded-xl shadow-xl font-bold text-lg opacity-95 hover:opacity-100 mb-4">
             البلاغات الأمنية
         </a>
 
-        <!-- ==================== زر 4 ==================== -->
+        <!-- زر 4 -->
         <a href="contact-officer.html"
            class="block bg-green-500 text-white text-center
                   w-full py-4 rounded-xl shadow-xl font-bold text-lg opacity-95 hover:opacity-100">
@@ -85,87 +84,11 @@
     <script src="script.js"></script>
     <script src="smart-access.js"></script>
 
-    <!-- ========== ميزة اللمس الناطق + مترجم لغة الإشارة (الفيديو فقط) ========== -->
+    <!-- ===== ميزة اللمس الناطق فقط — (تم حذف فيديو لغة الإشارة بالكامل) ===== -->
     <script>
 
-        /* نافذة مترجم الإشارة — أسفل يسار الشاشة */
-        const signBox = document.createElement("div");
-        signBox.style.position = "fixed";
-        signBox.style.bottom = "50px";
-        signBox.style.left = "20px";
-
-        /* إزالة الخلفية */
-        signBox.style.background = "transparent";
-        signBox.style.borderRadius = "0";
-        signBox.style.backdropFilter = "none";
-        signBox.style.padding = "0";
-
-        signBox.style.display = "flex";
-        signBox.style.flexDirection = "column";
-        signBox.style.alignItems = "center";
-        signBox.style.justifyContent = "center";
-        signBox.style.zIndex = "999999";
-
-        /* ====== الفيديو فقط ====== */
-        const videos = [
-            "assets/videos/11.mp4",
-            "assets/videos/22.mp4"
-        ];
-
-        let currentIndex = 0;
-
-        const video = document.createElement("video");
-        video.src = videos[0];
-        video.style.width = "160px";
-        video.style.height = "auto";
-        video.style.borderRadius = "12px";
-        video.autoplay = true;
-        video.muted = true;
-        video.playsInline = true;
-
-        video.onended = () => {
-            currentIndex = (currentIndex + 1) % videos.length;
-            video.src = videos[currentIndex];
-            video.play();
-        };
-
-        /* نص صغير تحت الفيديو */
-        const signText = document.createElement("div");
-        signText.innerText = "مرر الماوس على أي نص لعرض لغة الإشارة 👋";
-        signText.style.color = "#fff";
-        signText.style.fontSize = "12px";
-        signText.style.marginTop = "6px";
-        signText.style.textAlign = "center";
-
-        signBox.appendChild(video);
-        signBox.appendChild(signText);
-
-        document.body.appendChild(signBox);
-
-        /* قاموس الإشارة */
-        const signDictionary = {
-            "السفارة": "🤟 السفارة",
-            "الدولة": "👌 الدولة",
-            "بلاغ": "✋ بلاغ",
-            "طارئ": "🚨 طارئ",
-            "أمني": "✊ أمني",
-            "مساعدة": "👐 مساعدة",
-            "جواز": "📘 جواز",
-            "سفر": "✈️ سفر",
-            "إرسال": "📤 إرسال",
-            "عودة": "↩️ عودة",
-            "صورة": "📷 صورة",
-            "فيديو": "🎥 فيديو",
-            "خدمات": "🤲 خدمات",
-            "خاصة": "🤟 خاصة",
-            "الإشارة": "✋ إشارة",
-            "قراءة": "👂 قراءة",
-            "نص": "📘 نص"
-        };
-
-        /* اللمس الناطق */
+        /* نطق النص عند تمرير الماوس */
         document.addEventListener("mouseover", function (e) {
-
             let text = e.target.innerText.trim();
             if (text.length === 0) return;
 
@@ -175,23 +98,11 @@
             speak.lang = "ar-SA";
             speak.rate = 1.0;
             window.speechSynthesis.speak(speak);
-
-            let words = text.split(" ");
-            let found = null;
-            for (let w of words) {
-                if (signDictionary[w]) {
-                    found = signDictionary[w];
-                    break;
-                }
-            }
-
-            signText.innerText = found ? found : "🤟 إشارة النص";
         });
 
-        /* نطق اختيار القائمة المنسدلة */
+        /* نطق اختيار القوائم */
         document.addEventListener("change", function(e) {
             if (e.target.tagName === "SELECT") {
-
                 let selected = e.target.value;
                 if (!selected || selected.trim() === "") return;
 
