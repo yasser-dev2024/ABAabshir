@@ -9,75 +9,150 @@
     <link rel="stylesheet" href="style.css" />
 
     <style>
-        body, html {
+
+        html, body {
             overflow: hidden;
             height: 100%;
         }
 
         .page-wrapper {
-            height: 100vh;
-            overflow-y: auto;
-            padding: 20px;
-            padding-bottom: 120px;
+            height: calc(100vh - 90px);
+            overflow: hidden;
+            padding: 10px 18px;
         }
 
-        /* ===== تم تصغير الفيديو فقط بدون المساس بأي شيء ===== */
-        #signVideoBox {
+        .space-y-5 > * {
+            margin-top: 8px !important;
+            margin-bottom: 8px !important;
+        }
+
+        input, textarea, select, button {
+            padding: 8px 12px !important;
+        }
+
+        textarea {
+            height: 70px !important;
+        }
+
+        .footer-bar {
+            width: 100%;
+            height: 70px;
+            background-color: #009639;
             position: fixed;
-            bottom: 20px;
-            left: 20px;
-            width: 200px;      /* ✔ الحجم العرضي الجديد */
-            height: 120px;     /* ✔ الارتفاع الجديد الصغير */
-            background: rgba(0,0,0,0.45);
+            bottom: 0;
+            left: 0;
+            z-index: 9999;
+        }
+
+        /* شاشة تسجيل الفيديو */
+        #recordingScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 999999;
+            padding: 0;
+        }
+
+        #recordingVideo {
+            width: 90%;
+            max-width: 500px;
+            height: auto;
             border-radius: 15px;
-            backdrop-filter: blur(6px);
-            padding: 8px;
+            background: #000;
+        }
+
+        /* عداد 15 ثانية */
+        #recordingCounter {
+            color: #fff;
+            font-size: 38px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        /* عداد 10 ثواني */
+        #sendingCounterBox {
+            position: fixed;
+            bottom: 90px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            display: none;
+            z-index: 999999;
+        }
+
+        #sendingCounter {
+            padding: 12px 20px;
+            background: rgba(0,0,0,0.7);
+            color: #fff;
+            font-size: 22px;
+            border-radius: 12px;
+            width: fit-content;
+            margin: auto;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            background: rgba(0,0,0,0.4);
+            color: #fff;
+            width: 38px;
+            height: 38px;
             display: flex;
             align-items: center;
             justify-content: center;
+            border-radius: 10px;
+            font-size: 20px;
             z-index: 999999;
-            overflow: hidden;
-        }
-
-        #signVideoBox video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 12px;
+            backdrop-filter: blur(4px);
         }
     </style>
 </head>
 
 <body class="font-[Cairo]">
 
-    <!-- ===== نافذة مترجم الإشارة الجديدة (صغيرة كما طلبت) ===== -->
-    <div id="signVideoBox">
-        <video id="signVideo" autoplay muted playsinline></video>
+    <!-- زر العودة -->
+    <a href="index.html" class="back-btn">↩</a>
+
+    <!-- شاشة تسجيل الفيديو -->
+    <div id="recordingScreen">
+        <div id="recordingCounter">15</div>
+        <video id="recordingVideo" autoplay muted playsinline></video>
+    </div>
+
+    <!-- عداد الإرسال 10 ثواني -->
+    <div id="sendingCounterBox">
+        <div id="sendingCounter">سيتم الإرسال خلال 10 ثوانٍ…</div>
     </div>
 
     <!-- ===== صفحة كاملة ===== -->
     <div class="page-wrapper">
 
-        <h2 class="text-center text-xl font-bold text-green-700 mb-4">
+        <h2 class="text-center text-lg font-bold text-green-700 mb-2">
             التواصل مع السفارة
         </h2>
 
         <div class="space-y-5">
 
-            <!-- تحديد الموقع -->
             <div>
-                <label class="font-bold text-gray-700">تحديد الموقع</label>
+                <label class="font-bold text-gray-700 text-sm">تحديد الموقع</label>
                 <button onclick="detectLocation()" 
-                    class="w-full bg-blue-600 text-white mt-2 py-3 rounded-xl font-bold shadow hover:bg-blue-700">
+                    class="w-full bg-blue-600 text-white mt-1 py-2 rounded-xl font-bold shadow hover:bg-blue-700">
                     تحديد تلقائي عبر Google Map
                 </button>
-                <p id="locationStatus" class="text-sm text-gray-600 mt-1"></p>
+                <p id="locationStatus" class="text-xs text-gray-600 mt-1"></p>
             </div>
 
-            <!-- نوع البلاغ -->
             <div>
-                <label class="font-bold text-gray-700">نوع البلاغ</label>
-                <select id="reportType" class="w-full mt-2 p-3 rounded-xl shadow border bg-white">
+                <label class="font-bold text-gray-700 text-sm">نوع البلاغ</label>
+                <select id="reportType" class="w-full mt-1 p-2 rounded-xl shadow border bg-white text-sm">
                     <option selected disabled>اختر نوع البلاغ</option>
                     <option>بلاغ أمني</option>
                     <option>بلاغ طارئ</option>
@@ -87,44 +162,41 @@
                 </select>
             </div>
 
-            <!-- وصف الحالة -->
             <div>
-                <label class="font-bold text-gray-700">وصف الحالة</label>
-                <textarea id="details" rows="4"
-                    class="w-full mt-2 p-3 rounded-xl shadow border bg-white"
+                <label class="font-bold text-gray-700 text-sm">وصف الحالة</label>
+                <textarea id="details"
+                    class="w-full mt-1 p-2 rounded-xl shadow border bg-white text-sm"
                     placeholder="اكتب تفاصيل البلاغ هنا..."></textarea>
             </div>
 
-            <!-- إرفاق ملف -->
             <div>
-                <label class="font-bold text-gray-700">إرفاق ملف أو صورة</label>
+                <label class="font-bold text-gray-700 text-sm">إرفاق ملف أو صورة</label>
                 <input type="file" id="attachment"
-                       class="w-full mt-2 p-3 rounded-xl shadow border bg-white">
+                       class="w-full mt-1 p-2 rounded-xl shadow border bg-white text-sm">
             </div>
 
-            <!-- كاميرا الطوارئ -->
             <button onclick="startEmergencyVideo()"
-                class="w-full bg-red-600 text-white py-3 rounded-xl font-bold shadow hover:bg-red-700">
+                class="w-full bg-red-600 text-white py-2 rounded-xl font-bold shadow hover:bg-red-700">
                 تشغيل كاميرا الطوارئ (يسجّل 15 ثانية)
             </button>
 
-            <video id="preview" class="w-full rounded-xl hidden mt-3"></video>
+            <video id="preview" class="w-full rounded-xl hidden mt-1"></video>
 
-            <!-- إرسال البلاغ -->
             <button id="sendBtn" onclick="sendForm()"
-                class="w-full bg-green-700 text-white py-4 rounded-xl text-lg font-bold shadow hover:bg-green-800">
+                class="w-full bg-green-700 text-white py-3 rounded-xl text-lg font-bold shadow hover:bg-green-800">
                 إرسال البلاغ
             </button>
 
-            <!-- العودة -->
             <a href="index.html"
-                class="block text-center bg-gray-300 text-gray-800 py-4 rounded-xl text-lg font-bold shadow hover:bg-gray-400">
+                class="block text-center bg-gray-300 text-gray-800 py-3 rounded-xl text-lg font-bold shadow hover:bg-gray-400">
                 العودة للرئيسية
             </a>
         </div>
     </div>
 
-    <!-- ========== سكربتات ========== -->
+    <div class="footer-bar"></div>
+
+    <!-- سكربتات -->
     <script>
 
         function detectLocation() {
@@ -163,24 +235,45 @@
         }
 
         let autoSendTimer;
+        let sendCountdownInterval;
 
         function startEmergencyVideo() {
-            let video = document.getElementById("preview");
-            let fileInput = document.getElementById("attachment");
+
+            const screen = document.getElementById("recordingScreen");
+            const liveVideo = document.getElementById("recordingVideo");
+            const counter = document.getElementById("recordingCounter");
+            const sendingBox = document.getElementById("sendingCounterBox");
+            const sendingCounter = document.getElementById("sendingCounter");
+            const fileInput = document.getElementById("attachment");
+            const savedVideoPreview = document.getElementById("preview");
 
             navigator.mediaDevices.getUserMedia({ video: true, audio: true })
                 .then(async (stream) => {
 
-                    video.srcObject = stream;
-                    video.classList.remove("hidden");
-                    video.play();
+                    screen.style.display = "flex";
+                    liveVideo.srcObject = stream;
+                    liveVideo.play();
 
                     let recorder = new MediaRecorder(stream);
                     let chunks = [];
 
+                    let count = 15;
+                    counter.innerText = count;
+
+                    let countdownInterval = setInterval(() => {
+                        count--;
+                        counter.innerText = count;
+
+                        if (count <= 0) {
+                            clearInterval(countdownInterval);
+                        }
+                    }, 1000);
+
                     recorder.ondataavailable = e => chunks.push(e.data);
 
                     recorder.onstop = () => {
+
+                        screen.style.display = "none";
 
                         let blob = new Blob(chunks, { type: "video/mp4" });
                         let file = new File([blob], "emergency.mp4", { type: "video/mp4" });
@@ -189,13 +282,25 @@
                         dt.items.add(file);
                         fileInput.files = dt.files;
 
-                        video.classList.add("hidden");
+                        savedVideoPreview.classList.remove("hidden");
+                        savedVideoPreview.src = URL.createObjectURL(blob);
 
-                        alert("🎥 تم تسجيل فيديو الطوارئ وإرفاقه تلقائياً!");
+                        // عداد 10 ثواني بعد التسجيل
+                        sendingBox.style.display = "block";
 
-                        autoSendTimer = setTimeout(() => {
-                            sendForm();
-                        }, 10000);
+                        let sendCount = 10;
+                        sendingCounter.innerText = `سيتم الإرسال خلال ${sendCount} ثوانٍ…`;
+
+                        sendCountdownInterval = setInterval(() => {
+                            sendCount--;
+                            sendingCounter.innerText = `سيتم الإرسال خلال ${sendCount} ثوانٍ…`;
+
+                            if (sendCount <= 0) {
+                                clearInterval(sendCountdownInterval);
+                                sendingBox.style.display = "none";
+                                sendForm();
+                            }
+                        }, 1000);
                     };
 
                     recorder.start();
@@ -205,69 +310,14 @@
                         stream.getTracks().forEach(t => t.stop());
                     }, 15000);
                 })
-                .catch(() => alert("فشل تشغيل الكاميرا!"));
+                .catch(() => {
+                    alert("فشل تشغيل الكاميرا!");
+                });
         }
 
         function sendForm() {
-            clearTimeout(autoSendTimer);
             alert("✔ تم إرسال البلاغ بنجاح إلى السفارة.");
         }
-    </script>
-
-    <script src="smart-access.js"></script>
-
-    <script>
-        const signDictionary = {
-            "السفارة": "🤟 إشارة السفارة",
-            "تحديد": "👉",
-            "موقع": "👇",
-            "بلاغ": "✋ بلاغ",
-            "أمني": "✊ أمني",
-            "طارئ": "🚨",
-            "مساعدة": "👐 مساعدة",
-            "جواز": "📘",
-            "سفر": "✈️",
-            "إرسال": "📤",
-            "عودة": "↩️",
-            "ملف": "📄",
-            "صورة": "📷",
-            "فيديو": "🎥",
-            "الإشارة": "✋",
-            "قراءة": "👂",
-            "نص": "📘"
-        };
-
-        document.addEventListener("mouseover", function (e) {
-            let text = e.target.innerText.trim();
-            if (text.length === 0) return;
-
-            window.speechSynthesis.cancel();
-
-            const speak = new SpeechSynthesisUtterance(text);
-            speak.lang = "ar-SA";
-            speak.rate = 1.05;
-            window.speechSynthesis.speak(speak);
-        });
-    </script>
-
-    <script>
-        const signVideo = document.getElementById("signVideo");
-
-        const videos = [
-            "assets/videos/11.mp4",
-            "assets/videos/22.mp4"
-        ];
-
-        let currentVideo = 0;
-
-        function playNextVideo() {
-            signVideo.src = videos[currentVideo];
-            signVideo.play();
-            currentVideo = (currentVideo + 1) % videos.length;
-        }
-
-        signVideo.addEventListener("ended", playNextVideo);
-        playNextVideo();
     </script>
 
 </body>

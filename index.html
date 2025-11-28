@@ -10,6 +10,35 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="style.css">
+
+    <!-- ===== تنسيق خاص للكمبيوتر فقط لضبط العرض والتوسيط ===== -->
+    <style>
+        @media (min-width: 1024px) {
+            .desktop-wrapper {
+                max-width: 750px;
+                margin: 0 auto;
+            }
+
+            /* 🔹 تصغير الهيدر على الكمبيوتر فقط */
+            .bg-img {
+                height: 260px !important;
+                background-size: cover;
+                background-position: center;
+            }
+        }
+
+        /* 🔹 الشريط السفلي الأخضر */
+        .footer-bar {
+            width: 100%;
+            height: 75px;
+            background-color: #009639;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            z-index: 1;
+        }
+    </style>
+
 </head>
 
 <body class="font-[Cairo]">
@@ -17,8 +46,8 @@
     <!-- ===== الخلفية (من style.css وليس IMG) ===== -->
     <div class="bg-img"></div>
 
-    <!-- ===== الحاوية بين الهيدر والفوتر ===== -->
-    <div class="page-wrapper">
+    <!-- ===== الحاوية بين الهيدر والفوتر (أضفت فقط class="desktop-wrapper") ===== -->
+    <div class="page-wrapper desktop-wrapper">
 
         <!-- ==================== زر 1 ==================== -->
         <a href="embassy.html"
@@ -50,6 +79,9 @@
 
     </div>
 
+    <!-- ===== الشريط السفلي ===== -->
+    <div class="footer-bar"></div>
+
     <script src="script.js"></script>
     <script src="smart-access.js"></script>
 
@@ -59,7 +91,7 @@
         /* نافذة مترجم الإشارة — أسفل يسار الشاشة */
         const signBox = document.createElement("div");
         signBox.style.position = "fixed";
-        signBox.style.bottom = "20px";
+        signBox.style.bottom = "50px";   /* 🔥 تم رفع الفيديو للأعلى بدل 20px */
         signBox.style.left = "20px";
 
         /* 🔥 إزالة المربع والخلفية بالكامل */
