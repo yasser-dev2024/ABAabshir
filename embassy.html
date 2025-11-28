@@ -10,14 +10,14 @@
 
     <style>
 
+        /* 🔥 تمت إضافة التمرير عند الحاجة */
         html, body {
-            overflow: hidden;
             height: 100%;
+            overflow-y: auto !important;
         }
 
         .page-wrapper {
-            height: calc(100vh - 90px);
-            overflow: hidden;
+            min-height: calc(100vh - 90px);
             padding: 10px 18px;
         }
 
@@ -68,7 +68,6 @@
             background: #000;
         }
 
-        /* عداد 15 ثانية */
         #recordingCounter {
             color: #fff;
             font-size: 38px;
@@ -76,7 +75,6 @@
             margin-bottom: 15px;
         }
 
-        /* عداد 10 ثواني */
         #sendingCounterBox {
             position: fixed;
             bottom: 90px;
@@ -127,12 +125,12 @@
         <video id="recordingVideo" autoplay muted playsinline></video>
     </div>
 
-    <!-- عداد الإرسال 10 ثواني -->
+    <!-- عداد الإرسال -->
     <div id="sendingCounterBox">
         <div id="sendingCounter">سيتم الإرسال خلال 10 ثوانٍ…</div>
     </div>
 
-    <!-- ===== صفحة كاملة ===== -->
+    <!-- ===== المحتوى ===== -->
     <div class="page-wrapper">
 
         <h2 class="text-center text-lg font-bold text-green-700 mb-2">
@@ -182,9 +180,10 @@
 
             <video id="preview" class="w-full rounded-xl hidden mt-1"></video>
 
-            <button id="sendBtn" onclick="sendForm()"
+            <!-- 🔥 زر الإرسال الإضافي كما طلبت -->
+            <button onclick="sendForm()"
                 class="w-full bg-green-700 text-white py-3 rounded-xl text-lg font-bold shadow hover:bg-green-800">
-                إرسال البلاغ
+                إرسال فقط
             </button>
 
             <a href="index.html"
@@ -285,7 +284,6 @@
                         savedVideoPreview.classList.remove("hidden");
                         savedVideoPreview.src = URL.createObjectURL(blob);
 
-                        // عداد 10 ثواني بعد التسجيل
                         sendingBox.style.display = "block";
 
                         let sendCount = 10;
